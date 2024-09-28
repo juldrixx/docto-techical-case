@@ -14,7 +14,7 @@ module "aws_ec2" {
   name                = "docto-technical-case-ec2"
   vpc_private_subnets = module.aws_vpc.private_subnets
   vpc_public_subnets  = module.aws_vpc.public_subnets
-  vpc_nat_gateways    = module.aws_vpc.nat_gateways # c'est douteux il attend pas
+  vpc_nat_gateways    = module.aws_vpc.nat_gateways
   vpc_id              = module.aws_vpc.id
 }
 
