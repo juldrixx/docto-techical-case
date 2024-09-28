@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: ./fastapi
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+  website:
+    build:
+      context: ./website
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

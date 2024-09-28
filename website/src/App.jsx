@@ -1,0 +1,28 @@
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Container from "./Container";
+
+const theme = createTheme({
+  colorSchemes: {
+    dark: true,
+  },
+});
+
+const queryClient = new QueryClient({});
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Container />
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+export default App;
