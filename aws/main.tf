@@ -3,6 +3,7 @@ module "aws_vpc" {
 
   env    = var.env
   region = var.region
+  name   = "docto-technical-case-vpc"
 }
 
 module "aws_ec2" {
@@ -13,16 +14,17 @@ module "aws_ec2" {
   name                = "docto-technical-case-ec2"
   vpc_private_subnets = module.aws_vpc.private_subnets
   vpc_public_subnets  = module.aws_vpc.public_subnets
+  vpc_nat_gateways    = module.aws_vpc.nat_gateways # c'est douteux il attend pas
   vpc_id              = module.aws_vpc.id
 }
 
-module "aws_rds" {
-  source = "./rds"
+# module "aws_rds" {
+#   source = "./rds"
 
-  env                 = var.env
-  region              = var.region
-  name                = "docto-technical-case-db"
-  vpc_id              = module.aws_vpc.id
-  vpc_private_subnets = module.aws_vpc.private_subnets
-  sg_ec2_id           = module.aws_ec2.sg_id
-}
+#   env                 = var.env
+#   region              = var.region
+#   name                = "docto-technical-case-db"
+#   vpc_id              = module.aws_vpc.id
+#   vpc_private_subnets = module.aws_vpc.private_subnets
+#   sg_ec2_id           = module.aws_ec2.sg_id
+# }

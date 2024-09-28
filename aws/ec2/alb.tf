@@ -1,11 +1,21 @@
-resource "aws_security_group" "alb_sg" {
-  name        = "${var.name}-alb-sg"
+resource "aws_security_group" "alb" {
+  name = "${var.name}-alb-sg"
+
   description = "Security group for ALB instance ${var.name}"
   vpc_id      = var.vpc_id
 
   ingress {
+    description = "Allow all traffic through HTTP"
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow all traffic through HTTPs"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -16,17 +26,29 @@ resource "aws_security_group" "alb_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name        = "${var.name}-alb-sg"
+    Environment = var.env
+    Terraform   = "true"
+  }
 }
 
-resource "aws_lb" "ec2_alb" {
+resource "aws_lb" "ec2" {
   name               = "${var.name}-alb"
   load_balancer_type = "application"
   internal           = false
-  security_groups    = [aws_security_group.alb_sg.id]
+  security_groups    = [aws_security_group.alb.id]
   subnets            = var.vpc_public_subnets
+
+  tags = {
+    Name        = "${var.name}-alb"
+    Environment = var.env
+    Terraform   = "true"
+  }
 }
 
-resource "aws_alb_target_group" "ec2_alb_tg" {
+resource "aws_alb_target_group" "ec2" {
   name     = "${var.name}-alb-tg"
   port     = 80
   protocol = "HTTP"
@@ -41,20 +63,32 @@ resource "aws_alb_target_group" "ec2_alb_tg" {
     interval            = 60
     matcher             = "200"
   }
+
+  tags = {
+    Name        = "${var.name}-alb-tg"
+    Environment = var.env
+    Terraform   = "true"
+  }
 }
 
-resource "aws_autoscaling_attachment" "ec2_asg_attachment" {
-  autoscaling_group_name = aws_autoscaling_group.ec2_asg.id
-  lb_target_group_arn    = aws_alb_target_group.ec2_alb_tg.arn
+resource "aws_autoscaling_attachment" "ec2" {
+  autoscaling_group_name = aws_autoscaling_group.ec2.id
+  lb_target_group_arn    = aws_alb_target_group.ec2.arn
 }
 
-resource "aws_alb_listener" "ec2_alb_http_listener" {
-  load_balancer_arn = aws_lb.ec2_alb.arn
+resource "aws_alb_listener" "ec2" {
+  load_balancer_arn = aws_lb.ec2.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.ec2_alb_tg.arn
+    target_group_arn = aws_alb_target_group.ec2.arn
+  }
+
+  tags = {
+    Name        = var.name
+    Environment = var.env
+    Terraform   = "true"
   }
 }

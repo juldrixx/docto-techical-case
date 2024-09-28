@@ -7,3 +7,8 @@ variable "region" {
   type        = string
   description = "AWS region for the Provider"
 }
+
+variable "name" {
+  type        = string
+  description = "Name of the VPC"
+}

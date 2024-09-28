@@ -20,12 +20,17 @@ variable "vpc_id" {
 
 variable "vpc_private_subnets" {
   type        = list(string)
-  description = "Private subnets the VPC"
+  description = "Private subnets of the VPC"
 }
 
 variable "vpc_public_subnets" {
   type        = list(string)
-  description = "Public subnets the VPC"
+  description = "Public subnets of the VPC"
+}
+
+variable "vpc_nat_gateways" {
+  type = list(string)
+  description = "Nat gateways of the VPC"
 }
 
 variable "instance_type" {

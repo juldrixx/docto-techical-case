@@ -1,5 +1,5 @@
-resource "aws_iam_role" "ec2_role" {
-  name = "${var.name}-roles"
+resource "aws_iam_role" "ec2" {
+  name = "${var.name}-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -15,61 +15,16 @@ resource "aws_iam_role" "ec2_role" {
   })
 
   tags = {
+    Name        = "${var.name}-role"
     Environment = var.env
     Terraform   = "true"
   }
 }
 
-resource "aws_iam_policy" "session-manager" {
-  description = "session-manager"
-  name        = "session-manager"
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Action" : "ec2:*",
-        "Effect" : "Allow",
-        "Resource" : "*"
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : "elasticloadbalancing:*",
-        "Resource" : "*"
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : "cloudwatch:*",
-        "Resource" : "*"
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : "autoscaling:*",
-        "Resource" : "*"
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : "iam:CreateServiceLinkedRole",
-        "Resource" : "*",
-        "Condition" : {
-          "StringEquals" : {
-            "iam:AWSServiceName" : [
-              "autoscaling.amazonaws.com",
-              "ec2scheduled.amazonaws.com",
-              "elasticloadbalancing.amazonaws.com",
-              "spot.amazonaws.com",
-              "spotfleet.amazonaws.com",
-              "transitgateway.amazonaws.com"
-            ]
-          }
-        }
-      }
-    ]
-  })
-}
 
 resource "aws_iam_policy" "s3_access" {
-  name        = "S3AccessPolicy"
-  description = "Policy to allow access to specific S3 bucket"
+  name        = "${var.name}-s3-bucket"
+  description = "Policy to allow access to S3 bucket ${aws_s3_bucket.ec2.bucket}"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -81,27 +36,32 @@ resource "aws_iam_policy" "s3_access" {
           "s3:ListBucket",
         ]
         Resource = [
-          "arn:aws:s3:::${aws_s3_bucket.ec2_bucket.bucket}",
-          "arn:aws:s3:::${aws_s3_bucket.ec2_bucket.bucket}/*"
+          "arn:aws:s3:::${aws_s3_bucket.ec2.bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.ec2.bucket}/*"
         ]
       },
     ]
   })
+
+  tags = {
+    Name        = "${var.name}-s3-bucket"
+    Environment = var.env
+    Terraform   = "true"
+  }
 }
 
-
-resource "aws_iam_role_policy_attachment" "ec2_cloud_watch_policy" {
-  role       = aws_iam_role.ec2_role.name
-  # policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-  policy_arn = aws_iam_policy.session-manager.arn
-}
-
-resource "aws_iam_role_policy_attachment" "ec2_s3_policy" {
-  role       = aws_iam_role.ec2_role.name
+resource "aws_iam_role_policy_attachment" "s3" {
+  role       = aws_iam_role.ec2.name
   policy_arn = aws_iam_policy.s3_access.arn
 }
 
-resource "aws_iam_instance_profile" "ec2_instance_profile" {
+resource "aws_iam_instance_profile" "ec2" {
   name = "${var.name}-instance-profile"
-  role = aws_iam_role.ec2_role.name
+  role = aws_iam_role.ec2.name
+
+  tags = {
+    Name        = "${var.name}-instance-profile"
+    Environment = var.env
+    Terraform   = "true"
+  }
 }

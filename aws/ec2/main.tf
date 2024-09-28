@@ -1,4 +1,4 @@
-resource "aws_security_group" "ec2_sg" {
+resource "aws_security_group" "ec2" {
   name = "${var.name}-sg"
 
   description = "Security group for EC2 instance ${var.name}"
@@ -13,22 +13,39 @@ resource "aws_security_group" "ec2_sg" {
   # }
 
   # ingress {
-  #   description = "Allow SSH traffic from my computer"
-  #   from_port   = "22"
-  #   to_port     = "22"
+  #   description = "Allow all traffic through HTTPs"
+  #   from_port   = 443
+  #   to_port     = 443
   #   protocol    = "tcp"
-  #   cidr_blocks = ["2.15.169.232/32"]
+  #   cidr_blocks = ["0.0.0.0/0"]
   # }
+
+  ingress {
+    description = "Allow all traffic through SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   ingress {
     description     = "Allow ALB traffic through HTTP"
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  ingress {
+    description     = "Allow ALB traffic through HTTPs"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
   }
 
   egress {
+    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -36,37 +53,30 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   tags = {
+    Name        = "${var.name}-sg"
     Environment = var.env
     Terraform   = "true"
   }
 }
 
-# resource "aws_key_pair" "tutorial_kp" {
-#   key_name   = "tutorail_kp"
-#   public_key = file("ec2/files/tutorial_kp.pub")
-# }
-
-resource "aws_launch_template" "ec2_instance" {
+resource "aws_launch_template" "ec2" {
   image_id      = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
 
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+  vpc_security_group_ids = [aws_security_group.ec2.id]
   update_default_version = true
 
-  # key_name = aws_key_pair.tutorial_kp.key_name
+  metadata_options {
+    http_tokens = "required"
+  }
 
   iam_instance_profile {
-    arn = aws_iam_instance_profile.ec2_instance_profile.arn
+    arn = aws_iam_instance_profile.ec2.arn
   }
 
   monitoring {
     enabled = true
   }
-
-  # network_interfaces {
-  #   associate_public_ip_address = true
-  #   security_groups             = [aws_security_group.ec2_sg.id]
-  # }
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
@@ -80,7 +90,7 @@ resource "aws_launch_template" "ec2_instance" {
               mkdir -p /home/ubuntu/app
 
               # Copy the docker-compose.yml from the S3 bucket
-              aws s3 cp s3://${aws_s3_bucket.ec2_bucket.bucket}/${aws_s3_object.docker_compose.key} /home/ubuntu/app/docker-compose.yaml
+              aws s3 cp s3://${aws_s3_bucket.ec2.bucket}/${aws_s3_object.docker_compose.key} /home/ubuntu/app/docker-compose.yaml
 
               # Change to the app directory
               cd /home/ubuntu/app
@@ -91,19 +101,24 @@ resource "aws_launch_template" "ec2_instance" {
   )
 }
 
-resource "aws_autoscaling_group" "ec2_asg" {
+resource "aws_autoscaling_group" "ec2" {
   max_size            = var.max_size
   min_size            = var.min_size
-  vpc_zone_identifier = var.vpc_public_subnets
+  vpc_zone_identifier = var.vpc_private_subnets
 
   launch_template {
-    id      = aws_launch_template.ec2_instance.id
-    version = aws_launch_template.ec2_instance.latest_version
+    id      = aws_launch_template.ec2.id
+    version = aws_launch_template.ec2.latest_version
   }
 
   health_check_type         = "EC2"
   health_check_grace_period = 300
 
+  tag {
+    key                 = "Name"
+    value               = var.name
+    propagate_at_launch = true
+  }
   tag {
     key                 = "Environment"
     value               = var.env
@@ -114,9 +129,6 @@ resource "aws_autoscaling_group" "ec2_asg" {
     value               = "true"
     propagate_at_launch = true
   }
-}
 
-resource "aws_cloudwatch_log_group" "ec2_log_group" {
-  name              = "/ec2/logs"
-  retention_in_days = 7
+  depends_on = [var.vpc_nat_gateways]
 }
