@@ -33,8 +33,6 @@
 tfsec .
 ```
 
-- Add `tfsec` to GitHub CI and fix the current issue
-- Add DNS hostname as output
 - Add Write file S3 with API/Website
 - Add Backup RDS
 - Complete Documentation:
