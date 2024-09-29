@@ -5,6 +5,11 @@ services:
     image: ghcr.io/juldrixx/docto-technical-case-fastapi:latest
     environment:
       - FASTAPI_ROOT_PATH=${fastapi_path}
+      - MYSQL_USER=${mysql_user}
+      - MYSQL_PASSWORD=${mysql_password}
+      - MYSQL_HOST=${mysql_host}
+      - MYSQL_PORT=${mysql_port}
+      - MYSQL_DB=${mysql_db}
     ports:
       - "8000:8000"
 

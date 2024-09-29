@@ -29,7 +29,7 @@ variable "vpc_public_subnets" {
 }
 
 variable "vpc_nat_gateways" {
-  type = list(string)
+  type        = list(string)
   description = "Nat gateways of the VPC"
 }
 
@@ -40,19 +40,45 @@ variable "instance_type" {
 }
 
 variable "min_size" {
-  type = number
+  type        = number
   description = "Minimum number of EC2 instance"
-  default = 2
+  default     = 2
 }
 
 variable "max_size" {
-  type = number
+  type        = number
   description = "Maximum number of EC2 instance"
-  default = 5
+  default     = 5
 }
 
 variable "fastapi_root_path" {
-  type = string
+  type        = string
   description = "Root path URL for the FastAPI"
-  default = "/fastapi"
+  default     = "/fastapi"
+}
+
+variable "mysql_user" {
+  type        = string
+  description = "MySQL user"
+}
+
+variable "mysql_password" {
+  type        = string
+  description = "MySQL password"
+  sensitive   = true
+}
+
+variable "mysql_host" {
+  type        = string
+  description = "MySQL host"
+}
+
+variable "mysql_port" {
+  type        = number
+  description = "MySQL port"
+}
+
+variable "mysql_db" {
+  type        = string
+  description = "MySQL description"
 }
