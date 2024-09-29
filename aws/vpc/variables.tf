@@ -12,3 +12,13 @@ variable "name" {
   type        = string
   description = "Name of the VPC"
 }
+
+variable "kms_key_arn" {
+  type        = string
+  description = "KMS Key ARN"
+}
+
+variable "cidr_block" {
+  type        = string
+  description = "CIDR block"
+}

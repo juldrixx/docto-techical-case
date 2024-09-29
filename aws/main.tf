@@ -1,9 +1,22 @@
+#tfsec:ignore:aws-kms-auto-rotate-keys
+resource "aws_kms_key" "kms_key" {
+  description = "Used to encrypt resources."
+
+  tags = {
+    Environment = var.env
+    Terraform   = "true"
+  }
+}
+
 module "aws_vpc" {
   source = "./vpc"
 
   env    = var.env
   region = var.region
   name   = "docto-technical-case-vpc"
+
+  cidr_block  = var.cidr_block
+  kms_key_arn = aws_kms_key.kms_key.arn
 }
 
 module "aws_rds" {
@@ -16,6 +29,7 @@ module "aws_rds" {
   vpc_id              = module.aws_vpc.id
   vpc_private_subnets = module.aws_vpc.private_subnets
   sg_ec2_id           = module.aws_ec2.sg_id
+  kms_key_arn         = aws_kms_key.kms_key.arn
 }
 
 module "aws_ec2" {
@@ -25,6 +39,9 @@ module "aws_ec2" {
   region = var.region
   name   = "docto-technical-case-ec2"
 
+  cidr_block          = var.cidr_block
+  kms_key_arn         = aws_kms_key.kms_key.arn
+  
   vpc_private_subnets = module.aws_vpc.private_subnets
   vpc_public_subnets  = module.aws_vpc.public_subnets
   vpc_nat_gateways    = module.aws_vpc.nat_gateways

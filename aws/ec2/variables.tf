@@ -82,3 +82,13 @@ variable "mysql_db" {
   type        = string
   description = "MySQL description"
 }
+
+variable "cidr_block" {
+  type        = string
+  description = "CIDR block"
+}
+
+variable "kms_key_arn" {
+  type        = string
+  description = "KMS Key ARN"
+}

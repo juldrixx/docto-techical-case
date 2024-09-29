@@ -1,3 +1,5 @@
+#tfsec:ignore:aws-ec2-no-public-ingress-sgr
+#tfsec:ignore:aws-ec2-no-public-egress-sgr
 resource "aws_security_group" "alb" {
   name = "${var.name}-alb-sg"
 
@@ -21,6 +23,7 @@ resource "aws_security_group" "alb" {
   }
 
   egress {
+    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -34,12 +37,14 @@ resource "aws_security_group" "alb" {
   }
 }
 
+#tfsec:ignore:aws-elb-alb-not-public
 resource "aws_lb" "ec2" {
-  name               = "${var.name}-alb"
-  load_balancer_type = "application"
-  internal           = false
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = var.vpc_public_subnets
+  name                       = "${var.name}-alb"
+  load_balancer_type         = "application"
+  internal                   = false
+  security_groups            = [aws_security_group.alb.id]
+  subnets                    = var.vpc_public_subnets
+  drop_invalid_header_fields = true
 
   tags = {
     Name        = "${var.name}-alb"
@@ -104,6 +109,7 @@ resource "aws_autoscaling_attachment" "website" {
   lb_target_group_arn    = aws_alb_target_group.website.arn
 }
 
+#tfsec:ignore:aws-elb-http-not-used
 resource "aws_alb_listener" "ec2" {
   load_balancer_arn = aws_lb.ec2.arn
   port              = "80"

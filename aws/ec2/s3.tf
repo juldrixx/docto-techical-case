@@ -1,3 +1,5 @@
+#tfsec:ignore:aws-s3-enable-bucket-logging
+#tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "ec2" {
   bucket = var.name
 
@@ -8,12 +10,32 @@ resource "aws_s3_bucket" "ec2" {
   }
 }
 
+resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
+  bucket = aws_s3_bucket.ec2.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = var.kms_key_arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
 resource "aws_s3_bucket_ownership_controls" "ec2" {
   bucket = aws_s3_bucket.ec2.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "ec2" {
+  bucket = aws_s3_bucket.ec2.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_acl" "ec2" {

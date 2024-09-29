@@ -1,5 +1,6 @@
+# Create VPC
 resource "aws_vpc" "vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.cidr_block
 
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -9,6 +10,21 @@ resource "aws_vpc" "vpc" {
     Environment = var.env
     Terraform   = "true"
   }
+}
+
+# Create CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "vpc" {
+  name              = "vpc-flow-logs"
+  retention_in_days = 1
+  kms_key_id        = var.kms_key_arn
+}
+
+# Create Flow Log
+resource "aws_flow_log" "vpc" {
+  vpc_id          = aws_vpc.vpc.id
+  iam_role_arn    = aws_iam_role.vpc.arn
+  log_destination = aws_cloudwatch_log_group.vpc.arn
+  traffic_type    = "ALL"
 }
 
 # Create Public Subnets

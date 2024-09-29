@@ -45,3 +45,8 @@ variable "sg_ec2_id" {
   type        = string
   description = "Security Group Id for the EC2 instance"
 }
+
+variable "kms_key_arn" {
+  type        = string
+  description = "KMS Key ARN"
+}

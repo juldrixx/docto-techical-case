@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
     inputs:
       run_destroy:
-        description: 'Do you want to destroy the infrastructure? (Otherwise you will apply it)'
+        description: "Do you want to destroy the infrastructure? (Otherwise you will apply it)"
         required: false
-        default: 'false'
-        type: boolean 
+        default: "false"
+        type: boolean
 
 jobs:
   test_fastapi:
@@ -111,6 +111,21 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
+  terraform_tfsec:
+    runs-on: ubuntu-latest
+    needs: terraform_validate
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up tfsec
+        uses: aquasecurity/tfsec@v1.28.10
+
+      - name: Run tfsec
+        run: |
+          tfsec .
 
   terraform_plan:
     if: github.event.inputs.run_destroy != 'true'

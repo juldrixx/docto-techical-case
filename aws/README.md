@@ -100,11 +100,11 @@ locals {
 }
 ```
 
-After that, using our defined CIDR `cidr = "10.0.0.0/16"`, that represent the VPC IP range, we are creating private and public subnets in these zones, making sure that the IPs addresses of these subnets do not overlap.
+After that, using our defined CIDR block `cidr_block = "10.0.0.0/16"`, that represent the VPC IP range, we are creating private and public subnets in these zones, making sure that the IPs addresses of these subnets do not overlap.
 
 ```tf
-public_subnets = [for k, v in local.azs : cidrsubnet("10.0.0.0/16", 4, k)]
-private_subnets = [for k, v in local.azs : cidrsubnet("10.0.0.0/16", 8, k + 64)]
+public_subnets = [for k, v in local.azs : cidrsubnet(var.cidr_block, 4, k)]
+private_subnets = [for k, v in local.azs : cidrsubnet(var.cidr_block, 8, k + 64)]
 ```
 
 > If we create several VPCs, for example one per environment, we can use the same CIDR only if we don't want to peer our VPCs to each other to enable communication between them.

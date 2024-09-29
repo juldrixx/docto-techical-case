@@ -6,17 +6,6 @@ resource "random_password" "password" {
   special     = true
 }
 
-#tfsec:ignore:aws-kms-auto-rotate-keys
-resource "aws_kms_key" "db_kms_key" {
-  description = "Used to encrypt ${var.name} db."
-
-  tags = {
-    Name        = var.name
-    Environment = var.env
-    Terraform   = "true"
-  }
-}
-
 resource "aws_security_group" "rds_sg" {
   name = "${var.name}-sg"
 
@@ -48,21 +37,26 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
   }
 }
 
+#tfsec:ignore:AVD-AWS-0176
+#tfsec:ignore:AVD-AWS-0177
 resource "aws_db_instance" "rds" {
-  allocated_storage      = 10
-  db_name                = replace(var.name, "-", "_")
-  engine                 = var.engine
-  engine_version         = var.engine_version
-  instance_class         = var.instance_class
-  username               = local.db_username
-  password               = random_password.password.result
-  parameter_group_name   = "default.${var.engine}${var.engine_version}"
-  skip_final_snapshot    = true
-  storage_encrypted      = true
-  multi_az               = true
-  kms_key_id             = aws_kms_key.db_kms_key.arn
-  db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  allocated_storage               = 10
+  db_name                         = replace(var.name, "-", "_")
+  engine                          = var.engine
+  engine_version                  = var.engine_version
+  instance_class                  = var.instance_class
+  username                        = local.db_username
+  password                        = random_password.password.result
+  parameter_group_name            = "default.${var.engine}${var.engine_version}"
+  skip_final_snapshot             = true
+  storage_encrypted               = true
+  multi_az                        = false
+  performance_insights_enabled    = true
+  performance_insights_kms_key_id = var.kms_key_arn
+  kms_key_id                      = var.kms_key_arn
+  db_subnet_group_name            = aws_db_subnet_group.rds_subnet_group.name
+  vpc_security_group_ids          = [aws_security_group.rds_sg.id]
+  backup_retention_period         = 7
 
   tags = {
     Name        = var.name
