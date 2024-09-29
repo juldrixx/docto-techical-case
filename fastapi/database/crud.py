@@ -51,7 +51,8 @@ def create_todo(db: Session, todo: schemas.TodoCreate):
     db_todo = models.Todo(**todo.model_dump())
     db.add(db_todo)
     db.commit()
-    return db.refresh(db_todo)
+    db.refresh(db_todo)
+    return db_todo
 
 
 def delete_todo(db: Session, todo_id: int):

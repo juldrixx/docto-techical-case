@@ -29,10 +29,12 @@ def test_get_todos(db_session):
 
 def test_create_todo(db_session):
     new_todo = schemas.TodoCreate(label="New Todo", quantity=0)
-    mock_todo = models.Todo(id=1, **new_todo.model_dump())
     db_session.add = MagicMock()
     db_session.commit = MagicMock()
-    db_session.refresh = MagicMock(return_value=mock_todo)
+
+    def mock_refresh(todo):
+        todo.id = 1
+    db_session.refresh.side_effect = mock_refresh
 
     created_todo = crud.create_todo(db=db_session, todo=new_todo)
 
