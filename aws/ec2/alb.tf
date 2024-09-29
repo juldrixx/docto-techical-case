@@ -149,7 +149,7 @@ resource "aws_lb_listener_rule" "fastapi" {
     type             = "forward"
     target_group_arn = aws_alb_target_group.fastapi.arn
   }
-  
+
 
   condition {
     path_pattern {

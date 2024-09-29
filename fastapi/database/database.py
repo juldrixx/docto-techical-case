@@ -20,7 +20,7 @@ engine = create_engine(url=DB_URL, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-class Base(DeclarativeBase):
+class Base(DeclarativeBase): # pylint: disable=too-few-public-methods
     """Base class for SQLAlchemy declarative models.
 
     This class serves as a base for all ORM models in the application.

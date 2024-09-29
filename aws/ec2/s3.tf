@@ -24,8 +24,8 @@ resource "aws_s3_bucket_acl" "ec2" {
 }
 
 resource "aws_s3_object" "docker_compose" {
-  bucket = aws_s3_bucket.ec2.id
-  key    = "docker-compose.yaml"
+  bucket  = aws_s3_bucket.ec2.id
+  key     = "docker-compose.yaml"
   content = data.template_file.docker_compose.rendered
 
   tags = {

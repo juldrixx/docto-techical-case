@@ -1,7 +1,6 @@
 """
 Main module for the FastAPI application.
 """
-
 import os
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import NoResultFound

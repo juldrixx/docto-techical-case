@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String
 from .database import Base
 
 
-class Todo(Base):
+class Todo(Base): # pylint: disable=too-few-public-methods
     """Represents a task in a to-do list.
 
     This class defines the structure of the 'todos' table in the 

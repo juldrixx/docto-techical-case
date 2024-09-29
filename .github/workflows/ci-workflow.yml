@@ -87,7 +87,6 @@ jobs:
   terraform_validate:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    # needs: [build_fastapi_image, build_website_image]
     steps:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -116,7 +115,6 @@ jobs:
   terraform_plan:
     if: github.event.inputs.run_destroy != 'true'
     runs-on: ubuntu-latest
-    # needs: [terraform_validate]
     steps:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
