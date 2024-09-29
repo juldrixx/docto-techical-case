@@ -50,5 +50,5 @@ elif [ "$cmd" = "validate" ]; then
   TF_DATA_DIR="envs/${env}/.terraform" terraform -chdir="${platform}" "${cmd}"
 else
   echo "TF_DATA_DIR=\"envs/${env}/.terraform\" terraform -chdir=\"${platform}\" \"${cmd}\" -var-file \"$(pwd)/${platform}/envs/${env}/config.tfvars\" -var-file \"$(pwd)/${platform}/envs/common.tfvars\""
-  TF_DATA_DIR="envs/${env}/.terraform" terraform -chdir="${platform}" "${cmd}" -var-file "$(pwd)/${platform}/envs/${env}/config.tfvars" -var-file "$(pwd)/${platform}/envs/common.tfvars"
+  # TF_DATA_DIR="envs/${env}/.terraform" terraform -chdir="${platform}" "${cmd}" -var-file "$(pwd)/${platform}/envs/${env}/config.tfvars" -var-file "$(pwd)/${platform}/envs/common.tfvars"
 fi

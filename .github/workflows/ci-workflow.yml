@@ -166,7 +166,7 @@ jobs:
           ./terraform.sh \
             --platform aws\
             --env dev \
-            --cmd "apply -auto-approve"
+            --cmd apply\ -auto-approve
     permissions:
       id-token: write
       contents: read
@@ -194,7 +194,7 @@ jobs:
           ./terraform.sh \
             --platform aws\
             --env dev \
-            --cmd "destroy -auto-approve"
+            --cmd destroy\ -auto-approve
     permissions:
       id-token: write
       contents: read
