@@ -58,10 +58,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -74,3 +74,22 @@ jobs:
     permissions:
       contents: read
       packages: write
+
+  terraform_validation:
+    runs-on: ubuntu-latest
+    needs: [test_python, build_react] 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.6
+
+      - name: Validate Terraform Configuration
+        run: |
+          ./terraform.sh \
+            --platform aws\
+            --env dev \
+            --cmd validate

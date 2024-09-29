@@ -5,6 +5,13 @@
 ./terraform.sh \
   --platform aws\
   --env dev \
+  --cmd validate
+```
+
+```sh
+./terraform.sh \
+  --platform aws\
+  --env dev \
   --cmd plan
 ```
 

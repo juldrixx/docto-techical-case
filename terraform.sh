@@ -45,6 +45,9 @@ echo "$cmd terraform: "
 if [ $cmd = "output" ]; then
   echo "TF_DATA_DIR=\"envs/${env}/.terraform\" terraform \"${cmd}\""
   TF_DATA_DIR="envs/${env}/.terraform" terraform "${cmd}"
+elif [ "$cmd" = "validate" ]; then
+  echo "TF_DATA_DIR=\"envs/${env}/.terraform\" terraform -chdir=\"${platform}\" \"${cmd}\""
+  TF_DATA_DIR="envs/${env}/.terraform" terraform -chdir="${platform}" "${cmd}"
 else
   echo "TF_DATA_DIR=\"envs/${env}/.terraform\" terraform -chdir=\"${platform}\" \"${cmd}\" -var-file \"$(pwd)/${platform}/envs/${env}/config.tfvars\" -var-file \"$(pwd)/${platform}/envs/common.tfvars\""
   TF_DATA_DIR="envs/${env}/.terraform" terraform -chdir="${platform}" "${cmd}" -var-file "$(pwd)/${platform}/envs/${env}/config.tfvars" -var-file "$(pwd)/${platform}/envs/common.tfvars"
