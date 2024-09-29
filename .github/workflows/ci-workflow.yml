@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   test_fastapi:
@@ -99,6 +100,63 @@ jobs:
             --platform aws\
             --env dev \
             --cmd validate
+    permissions:
+      id-token: write
+      contents: read
+
+  terraform_plan:
+    runs-on: ubuntu-latest
+    needs: [terraform_validate]
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::920373018420:role/github-action
+          aws-region: eu-west-3
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.6
+
+      - name: Validate Terraform Configuration
+        run: |
+          ./terraform.sh \
+            --platform aws\
+            --env dev \
+            --cmd plan
+    permissions:
+      id-token: write
+      contents: read
+
+  terraform_apply:
+    runs-on: ubuntu-latest
+    needs: [terraform_plan]
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::920373018420:role/github-action
+          aws-region: eu-west-3
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.6
+
+      - name: Validate Terraform Configuration
+        run: |
+          ./terraform.sh \
+            --platform aws\
+            --env dev \
+            --cmd apply -auto-approve
     permissions:
       id-token: write
       contents: read
