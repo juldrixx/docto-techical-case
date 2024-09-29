@@ -68,3 +68,6 @@ jobs:
         run: |
           make build-website
           make push-website
+    permissions:
+      contents: read
+      packages: write
