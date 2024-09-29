@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       run_destroy:
-        description: 'Do you want to destroy the infrastructure?'
+        description: 'Do you want to destroy the infrastructure? (Otherwise you will apply it)'
         required: false
         default: 'false'
         type: boolean 
