@@ -80,7 +80,7 @@ jobs:
     needs: [build_fastapi_image, build_website_image]
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::920373018420:role/github-action
           aws-region: eu-west-3

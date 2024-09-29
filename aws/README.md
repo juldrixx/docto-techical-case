@@ -35,7 +35,6 @@ Create an AWS User through the AWS Console with the following policies attached 
 - AmazonS3FullAccess: Allow us to manage S3 resources
 - IAMFullAccess: Allow us to manage IAM resources
 - AWSKeyManagementServiceFullAccess: Allow us to manage KMS resources
-- CloudWatchFullAccess: Allow us to manage CloudWatch resources
 
 Create an Access Key and retrieve its key and secret.
 Set the 2 environment variables with it:
@@ -46,6 +45,10 @@ export AWS_SECRET_ACCESS_KEY=<HIDE>
 ```
 
 > You can put theses exports in your `~/.bashrc` or directely put the variables in `/etc/environment`.
+
+#### Role
+
+
 
 ### S3 Bucket for Terraform state
 
