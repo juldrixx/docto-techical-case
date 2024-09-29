@@ -125,6 +125,7 @@ jobs:
   terraform_plan:
     if: github.event.inputs.run_destroy != 'true'
     runs-on: ubuntu-latest
+    needs: ${{ github.event_name == 'push' && 'terraform_tfsec' }}
     steps:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
