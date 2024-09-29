@@ -25,7 +25,6 @@ jobs:
       - name: Run tests with coverage
         run: |
           cd fastapi
-          pytest
           coverage run -m pytest
           coverage report
           coverage html
@@ -69,3 +68,6 @@ jobs:
         run: |
           make build-website
           make push-website
+    permissions:
+      contents: read
+      packages: write
