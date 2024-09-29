@@ -119,13 +119,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up tfsec
-        uses: aquasecurity/tfsec@v1.28.10
-
-      - name: Run tfsec
-        run: |
-          tfsec .
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
 
   terraform_plan:
     if: github.event.inputs.run_destroy != 'true'
