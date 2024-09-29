@@ -50,3 +50,9 @@ variable "max_size" {
   description = "Maximum number of EC2 instance"
   default = 5
 }
+
+variable "fastapi_root_path" {
+  type = string
+  description = "Root path URL for the FastAPI"
+  default = "/fastapi"
+}

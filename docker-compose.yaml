@@ -6,17 +6,12 @@ services:
       context: ./fastapi
     ports:
       - "8000:8000"
-    networks:
-      - app-network
 
   website:
     build:
       context: ./website
+    environment:
+      - REACT_APP_FASTAPI_URL=http://localhost:8000
+      - NGINX_ROOT_PATH=/website
     ports:
       - "80:80"
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge

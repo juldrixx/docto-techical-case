@@ -48,8 +48,8 @@ resource "aws_lb" "ec2" {
   }
 }
 
-resource "aws_alb_target_group" "ec2" {
-  name     = "${var.name}-alb-tg"
+resource "aws_alb_target_group" "website" {
+  name     = "${var.name}-website"
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id
@@ -65,15 +65,43 @@ resource "aws_alb_target_group" "ec2" {
   }
 
   tags = {
-    Name        = "${var.name}-alb-tg"
+    Name        = "${var.name}-website"
     Environment = var.env
     Terraform   = "true"
   }
 }
 
-resource "aws_autoscaling_attachment" "ec2" {
+resource "aws_alb_target_group" "fastapi" {
+  name     = "${var.name}-fastapi"
+  port     = 8000
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+
+  health_check {
+    path                = "/"
+    port                = "traffic-port"
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    timeout             = 2
+    interval            = 60
+    matcher             = "200"
+  }
+
+  tags = {
+    Name        = "${var.name}-fastapi"
+    Environment = var.env
+    Terraform   = "true"
+  }
+}
+
+resource "aws_autoscaling_attachment" "fastapi" {
   autoscaling_group_name = aws_autoscaling_group.ec2.id
-  lb_target_group_arn    = aws_alb_target_group.ec2.arn
+  lb_target_group_arn    = aws_alb_target_group.fastapi.arn
+}
+
+resource "aws_autoscaling_attachment" "website" {
+  autoscaling_group_name = aws_autoscaling_group.ec2.id
+  lb_target_group_arn    = aws_alb_target_group.website.arn
 }
 
 resource "aws_alb_listener" "ec2" {
@@ -82,13 +110,50 @@ resource "aws_alb_listener" "ec2" {
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.ec2.arn
+    type = "fixed-response"
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Resource not found"
+      status_code  = "404"
+    }
   }
 
   tags = {
     Name        = var.name
     Environment = var.env
     Terraform   = "true"
+  }
+}
+
+resource "aws_lb_listener_rule" "website" {
+  listener_arn = aws_alb_listener.ec2.arn
+  priority     = 200
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.website.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/*"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "fastapi" {
+  listener_arn = aws_alb_listener.ec2.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.fastapi.arn
+  }
+  
+
+  condition {
+    path_pattern {
+      values = ["${var.fastapi_root_path}*"]
+    }
   }
 }

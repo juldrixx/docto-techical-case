@@ -1,9 +1,11 @@
 """Main module"""
 
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+FASTAPI_ROOT_PATH = os.getenv('FASTAPI_ROOT_PATH', "")
+app = FastAPI(root_path=FASTAPI_ROOT_PATH)
 
 origins = [
     "http://localhost",
@@ -20,7 +22,7 @@ app.add_middleware(
 
 
 @app.get("/")
-async def main():
+def main():
     """Default API Root
 
     Returns:

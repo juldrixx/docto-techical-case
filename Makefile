@@ -20,7 +20,9 @@ push-fastapi:
 push-website:
 	docker push ${GHCR_REGISTRY}/${GITHUB_USERNAME}/${WEBSITE_IMAGE_NAME}:${IMAGE_VERSION}
 
+.PHONY: login
 login:
 	echo ${GITHUB_TOKEN} | docker login ${GHCR_REGISTRY} -u ${GITHUB_USERNAME} --password-stdin
 
+.PHONY: deploy
 deploy: build-fastapi push-fastapi build-website push-website

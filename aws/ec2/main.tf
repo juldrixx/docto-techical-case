@@ -4,22 +4,6 @@ resource "aws_security_group" "ec2" {
   description = "Security group for EC2 instance ${var.name}"
   vpc_id      = var.vpc_id
 
-  # ingress {
-  #   description = "Allow all traffic through HTTP"
-  #   from_port   = 80
-  #   to_port     = 80
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
-
-  # ingress {
-  #   description = "Allow all traffic through HTTPs"
-  #   from_port   = 443
-  #   to_port     = 443
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
-
   ingress {
     description = "Allow all traffic through SSH"
     from_port   = 22
@@ -37,9 +21,9 @@ resource "aws_security_group" "ec2" {
   }
 
   ingress {
-    description     = "Allow ALB traffic through HTTPs"
-    from_port       = 443
-    to_port         = 443
+    description     = "Allow ALB traffic through for API"
+    from_port       = 8000
+    to_port         = 8000
     protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
@@ -130,5 +114,5 @@ resource "aws_autoscaling_group" "ec2" {
     propagate_at_launch = true
   }
 
-  depends_on = [var.vpc_nat_gateways]
+  depends_on = [var.vpc_nat_gateways, aws_s3_object.docker_compose]
 }

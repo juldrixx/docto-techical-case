@@ -1,4 +1,5 @@
-const FASTAPI_URL = process.env.REACT_APP_FASTAPI_HOST;
+const FASTAPI_URL =
+  process.env.REACT_APP_FASTAPI_URL || "REACT_APP_FASTAPI_URL_PLACEHOLDER";
 
 export function getRoot() {
   const getInfo = {
