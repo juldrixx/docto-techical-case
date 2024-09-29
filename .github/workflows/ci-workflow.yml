@@ -50,6 +50,9 @@ jobs:
         run: |
           make build-fastapi
           make push-fastapi
+    permissions:
+      contents: read
+      packages: write
 
   build_react_image:
     runs-on: ubuntu-latest
