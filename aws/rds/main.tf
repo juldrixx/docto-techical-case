@@ -11,6 +11,7 @@ resource "aws_kms_key" "db_kms_key" {
   description = "Used to encrypt ${var.name} db."
 
   tags = {
+    Name        = var.name
     Environment = var.env
     Terraform   = "true"
   }
@@ -31,6 +32,7 @@ resource "aws_security_group" "rds_sg" {
   }
 
   tags = {
+    Name        = "${var.name}-sg"
     Environment = var.env
     Terraform   = "true"
   }
@@ -40,6 +42,7 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
   subnet_ids = var.vpc_private_subnets
 
   tags = {
+    Name        = var.name
     Environment = var.env
     Terraform   = "true"
   }
@@ -62,6 +65,7 @@ resource "aws_db_instance" "rds" {
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
   tags = {
+    Name        = var.name
     Environment = var.env
     Terraform   = "true"
   }

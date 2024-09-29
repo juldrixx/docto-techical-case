@@ -38,25 +38,25 @@ class Todo(TodoBase):
     Attributes:
         id (int): The unique identifier for the todo item.
 
-    Config:
-        orm_mode (bool): Enables interaction with ORM objects, allowing 
+    ConfigDict:
+        from_attributes (bool): Enables interaction with ORM objects, allowing 
                          this model to map data directly from database 
                          entities like SQLAlchemy models.
     """
     id: int
 
-    class Config:
+    class ConfigDict:
         """Pydantic configuration settings for the Todo model.
 
         Attributes:
-            orm_mode (bool): If set to True, allows Pydantic to read 
+            from_attributes (bool): If set to True, allows Pydantic to read 
                              data from ORM objects (e.g., SQLAlchemy models), 
                              converting them into Pydantic models seamlessly. 
                              This is particularly useful when returning 
                              database objects via API responses without 
                              manually converting them to dictionaries.
         """
-        orm_mode = True
+        from_attributes = True
 
 
 class TodosResponse(BaseModel):

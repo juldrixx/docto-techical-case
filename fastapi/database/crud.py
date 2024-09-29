@@ -51,8 +51,7 @@ def create_todo(db: Session, todo: schemas.TodoCreate):
     db_todo = models.Todo(**todo.model_dump())
     db.add(db_todo)
     db.commit()
-    db.refresh(db_todo)
-    return db_todo
+    return db.refresh(db_todo)
 
 
 def delete_todo(db: Session, todo_id: int):
@@ -67,7 +66,7 @@ def delete_todo(db: Session, todo_id: int):
 
     Returns:
         models.Todo: The deleted todo item.
-        
+
     Raises:
         NoResultFound: If no todo item with the specified ID exists.
     """

@@ -10,7 +10,10 @@ from database.database import SessionLocal, engine
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+IS_TESTING = os.getenv('TESTING', 'false').lower() == 'true'
 FASTAPI_ROOT_PATH = os.getenv('FASTAPI_ROOT_PATH', "")
+
+
 app = FastAPI(root_path=FASTAPI_ROOT_PATH)
 
 origins = [
@@ -28,10 +31,11 @@ app.add_middleware(
 )
 
 
-models.Base.metadata.create_all(bind=engine)
+if not IS_TESTING: # pragma: no cover
+    models.Base.metadata.create_all(bind=engine)
 
 
-def get_db():
+def get_db(): # pragma: no cover
     """Dependency function to provide a database session.
 
     This function is used as a dependency in FastAPI to inject 
