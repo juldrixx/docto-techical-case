@@ -1,12 +1,14 @@
-import { Box, Stack } from "@mui/material";
+import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import GitHubButton from "./components/GitHubButton";
 import ThemePicker from "./components/ThemePicker";
 import { getRoot } from "./services/fastapi.service";
+import TodoList from "./components/TodoList";
+import TodoForm from "./components/TodoForm";
 
 function Container() {
-  const test = useQuery({
-    queryKey: ["test"],
+  const apiMessage = useQuery({
+    queryKey: ["apiMessage"],
     queryFn: () => getRoot(),
   });
 
@@ -19,8 +21,21 @@ function Container() {
     >
       <ThemePicker />
       <GitHubButton />
-      <Stack alignItems="center" justifyContent="space-between" padding={2}>
-        {test.data}
+      <Stack
+        alignItems="center"
+        justifyContent="space-between"
+        padding={2}
+        gap={2}
+      >
+        {apiMessage.isLoading ? (
+          <LinearProgress sx={{ width: "80%" }} />
+        ) : (
+          <Typography>{apiMessage.data}</Typography>
+        )}
+        <Stack width="80%" padding={2} gap={2}>
+          <TodoForm />
+          <TodoList />
+        </Stack>
       </Stack>
     </Box>
   );

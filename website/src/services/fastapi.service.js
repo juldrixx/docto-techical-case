@@ -20,3 +20,71 @@ export function getRoot() {
       });
   });
 }
+
+export function getTodos(page = 0, rowsPerPage = 100) {
+  const getInfo = {
+    method: "GET",
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${FASTAPI_URL}/todos?limit=${rowsPerPage}&skip=${page * rowsPerPage}`,
+      getInfo
+    )
+      .then((result) => {
+        if (!result.ok) throw result;
+        return result.json();
+      })
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+export function deleteTodo(todo_id) {
+  const deleteInfo = {
+    method: "DELETE",
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(`${FASTAPI_URL}/todos/${todo_id}`, deleteInfo)
+      .then((result) => {
+        if (!result.ok) throw result;
+        return result.json();
+      })
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+export function createTodo(label, quantity) {
+  const postInfo = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ label, quantity }),
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(`${FASTAPI_URL}/todos`, postInfo)
+      .then((result) => {
+        if (!result.ok) throw result;
+        return result.json();
+      })
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
