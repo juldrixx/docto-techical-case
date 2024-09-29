@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  test_python:
+  test_fastapi:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -31,9 +31,9 @@ jobs:
         env:
           TESTING: true
 
-  build_python_image:
+  build_fastapi_image:
     runs-on: ubuntu-latest
-    needs: test_python
+    needs: test_fastapi
     if: success()
     steps:
       - name: Checkout repository
@@ -54,7 +54,7 @@ jobs:
       contents: read
       packages: write
 
-  build_react_image:
+  build_website_image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -75,9 +75,9 @@ jobs:
       contents: read
       packages: write
 
-  terraform_validation:
+  terraform_validate:
     runs-on: ubuntu-latest
-    needs: [test_python, build_react] 
+    needs: [build_fastapi_image, build_website_image] 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
