@@ -190,12 +190,12 @@ jobs:
         with:
           terraform_version: 1.9.6
 
-      - name: Delete Terraform Configuration
+      - name: Destroy Terraform Configuration
         run: |
           ./terraform.sh \
             --platform aws\
             --env dev \
-            --cmd delete -auto-approve
+            --cmd destroy -auto-approve
     permissions:
       id-token: write
       contents: read
