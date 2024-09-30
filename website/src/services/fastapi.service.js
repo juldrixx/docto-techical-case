@@ -88,3 +88,67 @@ export function createTodo(label, quantity) {
       });
   });
 }
+
+export function uploadObject(file) {
+  const postInfo = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+    body: file,
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(`${FASTAPI_URL}/objects`, postInfo)
+      .then((result) => {
+        if (!result.ok) throw result;
+        return result.json();
+      })
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+export function getObjects() {
+  const getInfo = {
+    method: "GET",
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(`${FASTAPI_URL}/objects`, getInfo)
+      .then((result) => {
+        if (!result.ok) throw result;
+        return result.json();
+      })
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+export function deleteObject(object_name) {
+  const deleteInfo = {
+    method: "DELETE",
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(`${FASTAPI_URL}/objects/${object_name}`, deleteInfo)
+      .then((result) => {
+        if (!result.ok) throw result;
+        return result.json();
+      })
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}

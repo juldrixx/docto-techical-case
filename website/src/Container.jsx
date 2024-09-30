@@ -1,16 +1,32 @@
-import { Box, LinearProgress, Stack, Typography } from "@mui/material";
+import { useState } from "react";
+import {
+  Box,
+  LinearProgress,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import GitHubButton from "./components/GitHubButton";
 import ThemePicker from "./components/ThemePicker";
 import { getRoot } from "./services/fastapi.service";
 import TodoList from "./components/TodoList";
 import TodoForm from "./components/TodoForm";
+import S3ObjectForm from "./components/S3ObjectForm";
+import S3ObjectList from "./components/S3ObjectList";
 
 function Container() {
+  const [tab, setTab] = useState(0);
+
   const apiMessage = useQuery({
     queryKey: ["apiMessage"],
     queryFn: () => getRoot(),
   });
+
+  const handleChangeTab = (_, newTab) => {
+    setTab(newTab);
+  };
 
   return (
     <Box
@@ -32,9 +48,22 @@ function Container() {
         ) : (
           <Typography>{apiMessage.data}</Typography>
         )}
+        <Tabs value={tab} onChange={handleChangeTab}>
+          <Tab label="Todo" />
+          <Tab label="S3" />
+        </Tabs>
         <Stack width="80%" padding={2} gap={2}>
-          <TodoForm />
-          <TodoList />
+          {tab === 0 ? (
+            <>
+              <TodoForm />
+              <TodoList />
+            </>
+          ) : (
+            <>
+              <S3ObjectForm />
+              <S3ObjectList />
+            </>
+          )}
         </Stack>
       </Stack>
     </Box>
