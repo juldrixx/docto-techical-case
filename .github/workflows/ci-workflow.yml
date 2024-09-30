@@ -106,7 +106,7 @@ jobs:
         run: |
           ./terraform.sh \
             --platform aws\
-            --env dev \
+            --env prd \
             --cmd validate
     permissions:
       id-token: write
@@ -144,7 +144,7 @@ jobs:
         run: |
           ./terraform.sh \
             --platform aws\
-            --env dev \
+            --env prd \
             --cmd plan
     permissions:
       id-token: write
@@ -173,7 +173,7 @@ jobs:
         run: |
           ./terraform.sh \
             --platform aws\
-            --env dev \
+            --env prd \
             --cmd apply \
             --auto-approve
     permissions:
@@ -202,7 +202,7 @@ jobs:
         run: |
           ./terraform.sh \
             --platform aws\
-            --env dev \
+            --env prd \
             --cmd destroy \
             --auto-approve
     permissions:
