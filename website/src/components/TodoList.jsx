@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Box,
   CircularProgress,
   IconButton,
   Paper,
@@ -54,7 +55,12 @@ export default function TodoList() {
     }
   };
 
-  if (todos.isFetching) return <CircularProgress />;
+  if (todos.isLoading)
+    return (
+      <Box width="100%" textAlign="center">
+        <CircularProgress />
+      </Box>
+    );
 
   return (
     <Paper sx={{ width: "100%", mb: 2 }}>

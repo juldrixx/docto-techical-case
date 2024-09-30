@@ -1,4 +1,5 @@
 import {
+  Box,
   CircularProgress,
   IconButton,
   Paper,
@@ -39,7 +40,12 @@ export default function S3ObjectList() {
     }
   };
 
-  if (s3Objects.isFetching) return <CircularProgress />;
+  if (s3Objects.isLoading)
+    return (
+      <Box width="100%" textAlign="center">
+        <CircularProgress />
+      </Box>
+    );
 
   return (
     <Paper sx={{ width: "100%", mb: 2 }}>
