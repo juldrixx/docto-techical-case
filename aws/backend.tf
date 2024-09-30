@@ -9,7 +9,7 @@ terraform {
   required_version = "= 1.9.6"
 
   backend "s3" {
-    key    = "docto-techincal-case"
+    key    = "docto-technical-case"
     region = var.region
   }
 }

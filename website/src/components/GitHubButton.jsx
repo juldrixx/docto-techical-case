@@ -6,7 +6,7 @@ export default function GitHubButton() {
     <IconButton
       size="large"
       target="_blank"
-      href="https://github.com/juldrixx/docto-techical-case"
+      href="https://github.com/juldrixx/docto-technical-case"
       sx={{ position: "absolute", left: 0, top: 0 }}
     >
       <GitHubIcon fontSize="large" />
