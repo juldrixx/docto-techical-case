@@ -4,8 +4,21 @@ services:
   fastapi:
     build:
       context: ./fastapi
+    environment:
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - AWS_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - S3_BUCKET=my-bucket
     ports:
       - "8000:8000"
+    depends_on:
+      db:
+        condition: service_started
   website:
     build:
       context: ./website
@@ -24,6 +37,18 @@ services:
       - "3406:3306"
     volumes:
       - my-db:/var/lib/mysql
+  minio:
+    image: bitnami/minio:latest
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_DEFAULT_BUCKETS=my-bucket
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - minio-data:/bitnami/minio/data
 
 volumes:
   my-db:
+  minio-data:
