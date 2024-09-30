@@ -169,7 +169,7 @@ def get_objects():
             status_code=500, detail=f"Error listing files: {str(e)}") from e
 
 
-@app.delete("/object/{file_name}", response_model=s3Schemas.DeleteResponse)
+@app.delete("/objects/{file_name}", response_model=s3Schemas.DeleteResponse)
 def delet_object(file_name: str):
     """
     Delete a file from the S3 bucket.

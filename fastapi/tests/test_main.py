@@ -257,7 +257,7 @@ def test_delete_object_success(override_s3_utils):
     _, _, mock_delete = override_s3_utils
     mock_delete.return_value = "s3://your-bucket/myfile.txt"
 
-    response = client.delete("/object/myfile.txt")
+    response = client.delete("/objects/myfile.txt")
 
     assert response.status_code == 200
     assert response.json() == {
@@ -279,7 +279,7 @@ def test_delete_object_failure(override_s3_utils):
         "DeleteObject"
     )
 
-    response = client.delete("/object/myfile.txt")
+    response = client.delete("/objects/myfile.txt")
 
     assert response.status_code == 500
     assert response.json() == {
