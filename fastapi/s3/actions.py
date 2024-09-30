@@ -6,7 +6,18 @@ import os
 import boto3
 
 
-s3_client = boto3.client('s3')
+def get_s3_client():
+    """
+    Create and return an S3 client using the `boto3` library.
+
+    This client is used to interact with the S3 service, allowing 
+    operations such as uploading, downloading, listing, and deleting objects 
+    from the bucket.
+
+    Returns:
+        boto3.S3.Client: A low-level client representing Amazon Simple Storage Service (S3).
+    """
+    return boto3.client('s3')
 
 
 def get_s3_bucket():
@@ -44,6 +55,7 @@ def list_objects():
         print(obj["name"], obj["path"])
     ```
     """
+    s3_client = get_s3_client()
     bucket_name = get_s3_bucket()
     response = s3_client.list_objects(Bucket=bucket_name)
     if "Contents" not in response:
@@ -71,6 +83,7 @@ def put_object(name, content):
     print(f"File uploaded to: {s3_path}")
     ```
     """
+    s3_client = get_s3_client()
     bucket_name = get_s3_bucket()
     s3_client.put_object(
         Bucket=bucket_name,
@@ -98,6 +111,7 @@ def delete_object(name):
     print(f"File deleted from: {s3_path}")
     ```
     """
+    s3_client = get_s3_client()
     bucket_name = get_s3_bucket()
     s3_client.delete_object(
         Bucket=bucket_name,
