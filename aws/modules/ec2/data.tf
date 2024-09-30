@@ -15,7 +15,7 @@ data "aws_ami" "ubuntu" {
 }
 
 data "template_file" "docker_compose" {
-  template = file("ec2/files/docker-compose.yaml.tpl")
+  template = file("${path.module}/files/docker-compose.yaml.tpl")
   vars = {
     fastapi_dns    = aws_lb.ec2.dns_name
     fastapi_path   = var.fastapi_root_path

@@ -10,7 +10,7 @@ resource "aws_kms_key" "kms_key" {
 
 #tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 module "aws_vpc" {
-  source = "./vpc"
+  source = "./modules/vpc"
 
   env    = var.env
   region = var.region
@@ -20,7 +20,7 @@ module "aws_vpc" {
 }
 
 module "aws_rds" {
-  source = "./rds"
+  source = "./modules/rds"
 
   env    = var.env
   region = var.region
@@ -33,7 +33,7 @@ module "aws_rds" {
 }
 
 module "aws_ec2" {
-  source = "./ec2"
+  source = "./modules/ec2"
 
   env    = var.env
   region = var.region
