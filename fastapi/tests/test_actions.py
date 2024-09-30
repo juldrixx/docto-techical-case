@@ -5,7 +5,7 @@ Unit tests for the S3 actions.
 import pytest
 import boto3
 from moto import mock_aws
-from s3.actions import list_objects, put_object, delete_object
+from s3.actions import list_objects, put_object, delete_object, get_object
 
 BUCKET_NAME = 'test-bucket'
 
@@ -128,3 +128,26 @@ def test_delete_object(s3_client):
     uploaded_objects = list_objects()
     assert len(uploaded_objects) == 0
     assert s3_path == "s3://test-bucket/testfile.txt"
+
+
+def test_get_object(s3_client):
+    """
+    Test downloading an object from the S3 bucket.
+
+    This test uploads an object to the mocked S3 bucket, then 
+    downloads it using the get_object function. It verifies that 
+    the downloaded content matches the original content.
+
+    Args:
+        s3_client (boto3.resource): The mocked S3 resource provided by the 
+        s3_client fixture.
+
+    Asserts:
+        - The downloaded content matches the original content uploaded.
+    """
+    s3_client.Bucket(BUCKET_NAME).put_object(
+        Key="testfile.txt", Body=b"Test file 1 content")
+
+    downloaded_content = get_object("testfile.txt")
+
+    assert downloaded_content == b"Test file 1 content"

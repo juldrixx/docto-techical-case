@@ -12,9 +12,14 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DownloadIcon from "@mui/icons-material/Download";
 import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
-import { deleteObject, getObjects } from "../services/fastapi.service";
+import {
+  deleteObject,
+  getObject,
+  getObjects,
+} from "../services/fastapi.service";
 
 export default function S3ObjectList() {
   const { enqueueSnackbar } = useSnackbar();
@@ -32,6 +37,23 @@ export default function S3ObjectList() {
         anchorOrigin: { horizontal: "right", vertical: "bottom" },
       });
       s3Objects.refetch();
+    } catch (e) {
+      enqueueSnackbar(`Error: ${e.statusText}`, {
+        variant: "error",
+        anchorOrigin: { horizontal: "right", vertical: "bottom" },
+      });
+    }
+  };
+
+  const handleClickDownload = async (object_name) => {
+    try {
+      const url = await getObject(object_name);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = object_name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     } catch (e) {
       enqueueSnackbar(`Error: ${e.statusText}`, {
         variant: "error",
@@ -71,6 +93,9 @@ export default function S3ObjectList() {
                   <TableCell>{name}</TableCell>
                   <TableCell>{path}</TableCell>
                   <TableCell align="right">
+                    <IconButton onClick={() => handleClickDownload(name)}>
+                      <DownloadIcon />
+                    </IconButton>
                     <IconButton onClick={() => handleClickDelete(name)}>
                       <DeleteIcon />
                     </IconButton>

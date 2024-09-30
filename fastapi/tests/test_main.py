@@ -55,8 +55,9 @@ def override_s3_utils():
     """
     with patch("s3.actions.put_object") as mock_put, \
             patch("s3.actions.list_objects") as mock_list, \
-            patch("s3.actions.delete_object") as mock_delete:
-        yield mock_put, mock_list, mock_delete
+            patch("s3.actions.delete_object") as mock_delete, \
+            patch("s3.actions.get_object") as mock_get:
+        yield mock_put, mock_list, mock_delete, mock_get
 
 
 def test_main_root():
@@ -174,7 +175,7 @@ def test_post_object_success(override_s3_utils):
     This test simulates uploading a file to S3 and asserts that
     the response contains the expected success message.
     """
-    mock_put, _, _ = override_s3_utils
+    mock_put, _, _, _ = override_s3_utils
     mock_put.return_value = "s3://your-bucket/myfile.txt"
 
     file_data = b"Sample file content"
@@ -195,7 +196,7 @@ def test_post_object_failure(override_s3_utils):
     This test simulates uploading a file to S3 and asserts that
     the response contains the expected error message.
     """
-    mock_put, _, _ = override_s3_utils
+    mock_put, _, _, _ = override_s3_utils
     mock_put.side_effect = Exception("S3 upload error")
 
     # Create a dummy file-like object
@@ -215,7 +216,7 @@ def test_get_objects_success(override_s3_utils):
     This test simulates retrieving the list of files from S3 and
     asserts that the response matches the expected structure.
     """
-    _, mock_list, _ = override_s3_utils
+    _, mock_list, _, _ = override_s3_utils
     mock_list.return_value = [
         {"name": "myfile.txt", "path": "s3://your-bucket/myfile.txt"},
         {"name": "anotherfile.txt", "path": "s3://your-bucket/anotherfile.txt"}
@@ -234,7 +235,7 @@ def test_get_objects_failure(override_s3_utils):
     This test simulates an error when attempting to retrieve the list of files from S3
     and asserts that the response matches the expected error structure.
     """
-    _, mock_list, _ = override_s3_utils
+    _, mock_list, _, _ = override_s3_utils
     mock_list.side_effect = ClientError(
         {"Error": {"Code": "404", "Message": "Not Found"}},
         "ListObjects"
@@ -254,7 +255,7 @@ def test_delete_object_success(override_s3_utils):
     This test simulates deleting a file from S3 and asserts that
     the response contains the expected success message.
     """
-    _, _, mock_delete = override_s3_utils
+    _, _, mock_delete, _ = override_s3_utils
     mock_delete.return_value = "s3://your-bucket/myfile.txt"
 
     response = client.delete("/objects/myfile.txt")
@@ -273,7 +274,7 @@ def test_delete_object_failure(override_s3_utils):
     This test simulates an error when attempting to delete a file from S3
     and asserts that the response matches the expected error structure.
     """
-    _, _, mock_delete = override_s3_utils
+    _, _, mock_delete, _ = override_s3_utils
     mock_delete.side_effect = ClientError(
         {"Error": {"Code": "404", "Message": "Not Found"}},
         "DeleteObject"
@@ -283,4 +284,51 @@ def test_delete_object_failure(override_s3_utils):
 
     assert response.status_code == 500
     assert response.json() == {
-        "detail": "Error deleting files: An error occurred (404) when calling the DeleteObject operation: Not Found"}
+        "detail":
+        "Error deleting files: An error occurred (404) when calling the DeleteObject operation: Not Found"
+    }
+
+
+def test_get_object_success(override_s3_utils):
+    """
+    Test the GET /objects/{file_name} endpoint for successful file download.
+
+    This test simulates downloading a file from S3 and verifies that the response
+    contains the expected file content and correct headers.
+    """
+    file_name = "myfile.txt"
+    file_content = b"Sample file content"
+
+    _, _, _, mock_get = override_s3_utils
+    mock_get.return_value = file_content
+
+    response = client.get(f"/objects/{file_name}")
+
+    assert response.status_code == 200
+    assert response.headers["Content-Disposition"] == f'attachment; filename={
+        file_name}'
+    assert response.content == file_content
+
+
+def test_get_object_not_found(override_s3_utils):
+    """
+    Test the GET /objects/{file_name} endpoint when the file is not found.
+
+    This test simulates a scenario where the requested file does not exist in S3
+    and verifies that the appropriate HTTP exception is raised.
+    """
+    file_name = "non_existent_file.txt"
+
+    _, _, _, mock_get = override_s3_utils
+    mock_get.side_effect = ClientError(
+        {"Error": {"Code": "404", "Message": "Not Found"}},
+        "GetObject"
+    )
+
+    response = client.get(f"/objects/{file_name}")
+
+    assert response.status_code == 500
+    assert response.json() == {
+        "detail":
+        "Error downloading file: An error occurred (404) when calling the GetObject operation: Not Found"
+    }

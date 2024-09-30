@@ -119,3 +119,29 @@ def delete_object(name):
     )
 
     return f"s3://{bucket_name}/{name}"
+
+
+def get_object(name):
+    """
+    Retrieve an object (file) from the specified S3 bucket.
+
+    **Args**:
+    - name: The key (filename) of the object to retrieve from the S3 bucket.
+
+    **Returns**:
+    - bytes: The content of the object retrieved from the S3 bucket.
+
+    **Raises**:
+    - ClientError: If there is an issue with retrieving the object.
+    
+    **Example**:
+    ```python
+    file_content = get_object("myfile.txt")
+    print(file_content)
+    ```
+    """
+    s3_client = get_s3_client()
+    bucket_name = get_s3_bucket()
+
+    response = s3_client.get_object(Bucket=bucket_name, Key=name)
+    return response['Body'].read()

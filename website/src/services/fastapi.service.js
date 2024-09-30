@@ -133,6 +133,27 @@ export function getObjects() {
   });
 }
 
+
+export function getObject(object_name) {
+  const getInfo = {
+    method: "GET",
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(`${FASTAPI_URL}/objects/${object_name}`, getInfo)
+      .then((result) => {
+        if (!result.ok) throw result;
+        return result.blob();
+      })
+      .then((result) => {
+        resolve(window.URL.createObjectURL(result));
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
 export function deleteObject(object_name) {
   const deleteInfo = {
     method: "DELETE",

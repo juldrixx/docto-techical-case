@@ -2,6 +2,7 @@
 Main module for the FastAPI application.
 """
 import os
+import io
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import NoResultFound
 from database import crud, models, schemas as todoSchemas
@@ -9,6 +10,7 @@ from database.database import SessionLocal, engine
 from s3 import actions, schemas as s3Schemas
 from botocore.exceptions import ClientError
 from fastapi import FastAPI, Depends, HTTPException, File, UploadFile
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 IS_TESTING = os.getenv('TESTING', 'false').lower() == 'true'
@@ -189,3 +191,30 @@ def delet_object(file_name: str):
     except ClientError as e:
         raise HTTPException(
             status_code=500, detail=f"Error deleting files: {str(e)}") from e
+
+
+@app.get("/objects/{file_name}")
+async def get_object(file_name: str):
+    """
+    Download a file from the S3 bucket.
+
+    **Args**:
+    - file_name: The name of the file (S3 object key) to be downloaded.
+
+    **Returns**:
+    - A StreamingResponse containing the file content.
+
+    **Raises**:
+    - HTTPException: If there is an issue retrieving the file.
+    """
+    try:
+        file_content = actions.get_object(name=file_name)
+
+        return StreamingResponse(
+            io.BytesIO(file_content),
+            media_type='application/octet-stream',
+            headers={"Content-Disposition": f"attachment; filename={file_name}"}
+        )
+    except ClientError as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error downloading file: {str(e)}") from e
