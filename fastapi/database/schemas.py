@@ -1,6 +1,6 @@
 """
 This module defines Pydantic models used for validating and serializing 
-data in a Todo application.
+Todo data.
 """
 from typing import List
 from pydantic import BaseModel
