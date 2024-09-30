@@ -24,5 +24,6 @@ data "template_file" "docker_compose" {
     mysql_host     = var.mysql_host
     mysql_port     = var.mysql_port
     mysql_db       = var.mysql_db
+    s3_bucket      = aws_s3_bucket.data.bucket
   }
 }

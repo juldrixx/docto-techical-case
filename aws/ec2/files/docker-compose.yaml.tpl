@@ -10,6 +10,7 @@ services:
       - MYSQL_HOST=${mysql_host}
       - MYSQL_PORT=${mysql_port}
       - MYSQL_DB=${mysql_db}
+      - S3_BUCKET=${s3_bucket}
     ports:
       - "8000:8000"
 

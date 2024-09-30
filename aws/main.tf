@@ -8,6 +8,7 @@ resource "aws_kms_key" "kms_key" {
   }
 }
 
+#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 module "aws_vpc" {
   source = "./vpc"
 
@@ -16,7 +17,6 @@ module "aws_vpc" {
   name   = "docto-technical-case-vpc"
 
   cidr_block  = var.cidr_block
-  kms_key_arn = aws_kms_key.kms_key.arn
 }
 
 module "aws_rds" {

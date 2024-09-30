@@ -37,9 +37,30 @@ resource "aws_iam_policy" "s3_access" {
         ]
         Resource = [
           "arn:aws:s3:::${aws_s3_bucket.ec2.bucket}",
-          "arn:aws:s3:::${aws_s3_bucket.ec2.bucket}/*"
+          "arn:aws:s3:::${aws_s3_bucket.ec2.bucket}/*",
         ]
       },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:DeleteObject",
+        ]
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.data.bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.data.bucket}/*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey"
+        ]
+        Resource = var.kms_key_arn
+      }
     ]
   })
 

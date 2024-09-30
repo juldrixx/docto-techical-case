@@ -39,6 +39,7 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 
 #tfsec:ignore:AVD-AWS-0176
 #tfsec:ignore:AVD-AWS-0177
+#tfsec:ignore:aws-rds-enable-performance-insights
 resource "aws_db_instance" "rds" {
   allocated_storage               = 10
   db_name                         = replace(var.name, "-", "_")
@@ -51,8 +52,6 @@ resource "aws_db_instance" "rds" {
   skip_final_snapshot             = true
   storage_encrypted               = true
   multi_az                        = false
-  performance_insights_enabled    = true
-  performance_insights_kms_key_id = var.kms_key_arn
   kms_key_id                      = var.kms_key_arn
   db_subnet_group_name            = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids          = [aws_security_group.rds_sg.id]

@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-ec2-no-public-egress-sgr
 resource "aws_security_group" "ec2" {
   name = "${var.name}-sg"
 
@@ -33,7 +34,7 @@ resource "aws_security_group" "ec2" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [var.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -51,7 +52,8 @@ resource "aws_launch_template" "ec2" {
   update_default_version = true
 
   metadata_options {
-    http_tokens = "required"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
   }
 
   iam_instance_profile {

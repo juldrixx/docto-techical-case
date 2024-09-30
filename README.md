@@ -33,7 +33,6 @@
 tfsec .
 ```
 
-- Add Write file S3 with API/Website
 - Add Backup RDS
 - Complete Documentation:
   - OIDC GitHub Action: https://xebia.com/blog/how-to-deploy-terraform-to-aws-with-github-actions-authenticated-with-openid-connect/

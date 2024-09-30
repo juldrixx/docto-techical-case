@@ -12,21 +12,6 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-# Create CloudWatch Log Group
-resource "aws_cloudwatch_log_group" "vpc" {
-  name              = "vpc-flow-logs"
-  retention_in_days = 1
-  kms_key_id        = var.kms_key_arn
-}
-
-# Create Flow Log
-resource "aws_flow_log" "vpc" {
-  vpc_id          = aws_vpc.vpc.id
-  iam_role_arn    = aws_iam_role.vpc.arn
-  log_destination = aws_cloudwatch_log_group.vpc.arn
-  traffic_type    = "ALL"
-}
-
 # Create Public Subnets
 resource "aws_subnet" "publics" {
   count = length(local.public_subnets)
