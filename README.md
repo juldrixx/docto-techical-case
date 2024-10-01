@@ -16,7 +16,7 @@ Your company is migrating its on-premises data infrastructure to AWS. As a DataO
 
 ```sh
 ./terraform.sh \
-  --platform aws\
+  --platform aws \
   --env <env> \
   --cmd <command>
 ```
@@ -25,25 +25,25 @@ Basic commands:
 ```sh
 # Validate Terraform code
 ./terraform.sh \
-  --platform aws\
+  --platform aws \
   --env dev \
   --cmd validate
 
 # Plan Terraform code
 ./terraform.sh \
-  --platform aws\
+  --platform aws \
   --env dev \
   --cmd plan
 
 # Apply Terraform code
 ./terraform.sh \
-  --platform aws\
+  --platform aws \
   --env dev \
   --cmd apply
 
 # Destroy Terraform code
 ./terraform.sh \
-  --platform aws\
+  --platform aws \
   --env dev \
   --cmd destroy
 ```
