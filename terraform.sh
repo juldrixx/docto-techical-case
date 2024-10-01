@@ -43,7 +43,7 @@ while [ $# -gt 0 ]; do
 done
 
 echo "Initialise terraform: "
-echo "TF_IN_AUTOMATION=true TF_DATA_DIR=\"/envs/${env}/.terraform\" terraform -chdir=\"${platform}\" init --backend-config=\"$(pwd)/${platform}/backend.tfvars\""
+echo "TF_IN_AUTOMATION=true TF_DATA_DIR=\"envs/${env}/.terraform\" terraform -chdir=\"${platform}\" init --backend-config=\"$(pwd)/${platform}/backend.tfvars\""
 TF_IN_AUTOMATION=true TF_DATA_DIR="envs/${env}/.terraform" terraform -chdir="${platform}" init --backend-config="$(pwd)/${platform}/backend.tfvars"
 
 echo "$cmd terraform: "
