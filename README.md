@@ -61,6 +61,3 @@ And to generate the `TFDoc`, use `[terraform-docs](https://github.com/terraform-
 ```sh
 terraform-docs markdown --recursive --output-file TF_DOC.md ./
 ```
-
-- Complete Documentation:
-  - EC2 setup
