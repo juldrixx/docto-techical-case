@@ -3,7 +3,7 @@ resource "random_password" "password" {
   min_numeric = 1
   min_upper   = 1
   min_lower   = 1
-  special     = true
+  special     = false
 }
 
 resource "aws_security_group" "rds_sg" {

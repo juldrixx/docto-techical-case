@@ -16,7 +16,7 @@ module "aws_vpc" {
   region = var.region
   name   = "docto-technical-case-vpc"
 
-  cidr_block  = var.cidr_block
+  cidr_block = var.cidr_block
 }
 
 module "aws_rds" {
@@ -39,9 +39,9 @@ module "aws_ec2" {
   region = var.region
   name   = "docto-technical-case-ec2"
 
-  cidr_block          = var.cidr_block
-  kms_key_arn         = aws_kms_key.kms_key.arn
-  
+  cidr_block  = var.cidr_block
+  kms_key_arn = aws_kms_key.kms_key.arn
+
   vpc_private_subnets = module.aws_vpc.private_subnets
   vpc_public_subnets  = module.aws_vpc.public_subnets
   vpc_nat_gateways    = module.aws_vpc.nat_gateways

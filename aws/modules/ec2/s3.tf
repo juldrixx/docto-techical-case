@@ -1,7 +1,7 @@
 #tfsec:ignore:aws-s3-enable-bucket-logging
 #tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "ec2" {
-  bucket = var.name
+  bucket        = var.name
   force_destroy = true
 
   tags = {
