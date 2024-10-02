@@ -161,7 +161,7 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
 
   terraform_plan_aws:
-    if: github.event.inputs.run_destroy != 'true' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'aws')
+    if: (github.event.inputs.run_destroy != 'true' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'aws')) || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Configure aws credentials
