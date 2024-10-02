@@ -120,7 +120,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           project_id: 'pristine-clone-437317-u3'
-          workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+          workload_identity_provider: 'projects/611489444490/locations/global/workloadIdentityPools/github-wif-pool/providers/github-provider'
 
       - name: Checkout repository
         uses: actions/checkout@v4
