@@ -277,7 +277,7 @@ jobs:
 
   terraform_apply_gcp:
     runs-on: ubuntu-latest
-    needs: [terraform_plan_aws]
+    needs: [terraform_plan_gcp]
     if: github.event_name == 'workflow_dispatch' && github.events.plateform == 'gcp' && github.event.inputs.run_destroy != 'true'
     steps:
       - name: Checkout repository
