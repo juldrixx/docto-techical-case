@@ -248,7 +248,7 @@ jobs:
       contents: read
 
   terraform_plan_gcp:
-    if: github.event.inputs.run_destroy != 'true' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'gcp')
+    if: github.event.inputs.run_destroy != 'true' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'gcp') || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
