@@ -223,7 +223,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'aws') && github.event.inputs.run_destroy == 'true'
     steps:
       - name: Configure aws credentials
-        uses: google-github-actions/auth@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::920373018420:role/github-action
           aws-region: eu-west-3
