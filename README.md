@@ -52,7 +52,7 @@ Basic commands:
   --cmd destroy
 ```
 
-#### Addons
+### Addons
 
 To validate all the good practices for Terraform are applied, use `[TFSec](https://github.com/aquasecurity/tfsec)`:
 
