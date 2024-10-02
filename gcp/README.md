@@ -1,9 +1,8 @@
-# AWS
+# GCP
 
 ## Requirements
 
 ### Access Management
-
 
 #### Locally
 
