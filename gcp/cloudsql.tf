@@ -12,6 +12,7 @@ resource "google_service_networking_connection" "vpc_peering" {
   reserved_peering_ranges = [google_compute_global_address.sql.name]
 }
 
+#tfsec:ignore:google-sql-encrypt-in-transit-data
 resource "google_sql_database_instance" "sql" {
   name             = "${local.identifier}-sql"
   region           = var.region

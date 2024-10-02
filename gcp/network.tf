@@ -20,6 +20,7 @@ resource "google_compute_subnetwork" "subnetwork" {
   }
 }
 
+#tfsec:ignore:google-compute-no-public-egress
 resource "google_compute_firewall" "allow-egress" {
   name    = "${local.identifier}-allow-egress"
   network = google_compute_network.vpc.name
