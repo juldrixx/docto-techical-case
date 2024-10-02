@@ -22,4 +22,5 @@ module "gke" {
   horizontal_pod_autoscaling = true
   enable_private_endpoint    = false
   enable_private_nodes       = true
+  deletion_protection        = false
 }
