@@ -1,0 +1,1 @@
+bucket = "tf-docto-technical-case"
