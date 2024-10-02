@@ -23,6 +23,10 @@ resource "google_sql_database_instance" "sql" {
     tier              = "db-f1-micro"
     availability_type = "ZONAL"
     activation_policy = "ALWAYS"
+    
+    backup_configuration {
+      enabled = true
+    }
 
     ip_configuration {
       ipv4_enabled    = false

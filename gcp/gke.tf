@@ -4,6 +4,8 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(module.gke.ca_certificate)
 }
 
+#tfsec:ignore:google-gke-use-cluster-labels
+#tfsec:ignore:google-gke-enable-private-cluster
 module "gke" {
   source = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster"
 

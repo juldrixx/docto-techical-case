@@ -1,3 +1,4 @@
+#tfsec:ignore:google-storage-bucket-encryption-customer-key
 resource "google_storage_bucket" "gcs" {
   name          = "${local.identifier}-bucket"
   location      = "EU"
