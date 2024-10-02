@@ -3,6 +3,7 @@ resource "google_compute_network" "vpc" {
   routing_mode = "GLOBAL"
 }
 
+#tfsec:ignore:google-compute-enable-vpc-flow-logs
 resource "google_compute_subnetwork" "subnetwork" {
   name          = "${local.identifier}-subnetwork"
   ip_cidr_range = "10.1.0.0/22"

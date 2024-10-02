@@ -56,6 +56,14 @@ resource "kubernetes_deployment" "fastapi" {
             name  = "MYSQL_DB"
             value = google_sql_database.database.name
           }
+          env {
+            name  = "OBJECT_BUCKET"
+            value = google_storage_bucket.gcs.name
+          }
+          env {
+            name  = "OBJECT_BUCKET_TYPE"
+            value = "GCS"
+          }
         }
 
         container {
