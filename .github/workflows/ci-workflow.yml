@@ -132,7 +132,7 @@ jobs:
         with:
           project_id: "pristine-clone-437317-u3"
           workload_identity_provider: "projects/611489444490/locations/global/workloadIdentityPools/github-wif-pool/providers/github-provider"
-          service_account: github-actions@pristine-clone-437317-u3.iam.gserviceaccount.com
+          # service_account: github-actions@pristine-clone-437317-u3.iam.gserviceaccount.com
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
