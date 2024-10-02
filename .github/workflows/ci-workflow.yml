@@ -239,7 +239,7 @@ jobs:
       - name: Destroy Terraform Configuration
         run: |
           ./terraform.sh \
-            --platform gcp \
+            --platform aws \
             --env prd \
             --cmd destroy \
             --auto-approve
