@@ -84,7 +84,7 @@ jobs:
       contents: read
       packages: write
 
-  terraform_validate:
+  terraform_validate_aws:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
@@ -105,7 +105,35 @@ jobs:
       - name: Validate Terraform Configuration
         run: |
           ./terraform.sh \
-            --platform aws\
+            --platform aws \
+            --env prd \
+            --cmd validate
+    permissions:
+      id-token: write
+      contents: read
+
+  terraform_validate_gcp:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::920373018420:role/github-action
+          aws-region: eu-west-3
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.6
+
+      - name: Validate Terraform Configuration
+        run: |
+          ./terraform.sh \
+            --platform gcp \
             --env prd \
             --cmd validate
     permissions:
@@ -114,7 +142,7 @@ jobs:
 
   terraform_tfsec:
     runs-on: ubuntu-latest
-    needs: terraform_validate
+    needs: [terraform_validate_aws, terraform_validate_gcp]
     if: github.event_name == 'push'
     steps:
       - name: Checkout repository
@@ -122,7 +150,7 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
 
-  terraform_plan:
+  terraform_plan_aws:
     if: github.event.inputs.run_destroy != 'true'
     runs-on: ubuntu-latest
     steps:
@@ -143,14 +171,14 @@ jobs:
       - name: Plan Terraform Configuration
         run: |
           ./terraform.sh \
-            --platform aws\
+            --platform aws \
             --env prd \
             --cmd plan
     permissions:
       id-token: write
       contents: read
 
-  terraform_apply:
+  terraform_apply_aws:
     runs-on: ubuntu-latest
     needs: [terraform_plan]
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_destroy != 'true'
@@ -172,7 +200,7 @@ jobs:
       - name: Apply Terraform Configuration
         run: |
           ./terraform.sh \
-            --platform aws\
+            --platform aws \
             --env prd \
             --cmd apply \
             --auto-approve
@@ -180,7 +208,7 @@ jobs:
       id-token: write
       contents: read
 
-  terraform_delete:
+  terraform_delete_aws:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_destroy == 'true'
     steps:
@@ -201,7 +229,7 @@ jobs:
       - name: Destroy Terraform Configuration
         run: |
           ./terraform.sh \
-            --platform aws\
+            --platform aws \
             --env prd \
             --cmd destroy \
             --auto-approve
