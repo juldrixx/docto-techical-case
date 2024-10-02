@@ -48,7 +48,7 @@ This project is a **FastAPI** application designed to handle CRUD operations for
    MYSQL_DB=<your-mysql-db>
    AWS_ACCESS_KEY_ID=<your-access-key-id>
    AWS_SECRET_ACCESS_KEY=<your-secret-access-key>
-   S3_BUCKET=<your-s3-bucket-name>
+   OBJECT_BUCKET=<your-s3-bucket-name>
    ```
 
 3. **Run the application**:

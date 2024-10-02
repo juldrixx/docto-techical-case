@@ -21,11 +21,11 @@ import {
   getObjects,
 } from "../services/fastapi.service";
 
-export default function S3ObjectList() {
+export default function ObjectList() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const s3Objects = useQuery({
-    queryKey: ["s3_objects"],
+  const objects = useQuery({
+    queryKey: ["objects"],
     queryFn: () => getObjects(),
   });
 
@@ -36,7 +36,7 @@ export default function S3ObjectList() {
         variant: "success",
         anchorOrigin: { horizontal: "right", vertical: "bottom" },
       });
-      s3Objects.refetch();
+      objects.refetch();
     } catch (e) {
       enqueueSnackbar(`Error: ${e.statusText}`, {
         variant: "error",
@@ -62,7 +62,7 @@ export default function S3ObjectList() {
     }
   };
 
-  if (s3Objects.isLoading)
+  if (objects.isLoading)
     return (
       <Box width="100%" textAlign="center">
         <CircularProgress />
@@ -81,14 +81,14 @@ export default function S3ObjectList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {s3Objects.data.files.length === 0 ? (
+            {objects.data.files.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} align="center">
                   <Typography fontWeight={700}>No object</Typography>
                 </TableCell>
               </TableRow>
             ) : (
-              s3Objects.data.files.map(({ name, path }) => (
+              objects.data.files.map(({ name, path }) => (
                 <TableRow key={name}>
                   <TableCell>{name}</TableCell>
                   <TableCell>{path}</TableCell>

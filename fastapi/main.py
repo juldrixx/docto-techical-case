@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import NoResultFound
 from database import crud, models, schemas as todoSchemas
 from database.database import SessionLocal, engine
-from s3 import actions, schemas as s3Schemas
+from storage import actions, schemas as storageSchemas
 from botocore.exceptions import ClientError
 from fastapi import FastAPI, Depends, HTTPException, File, UploadFile
 from fastapi.responses import StreamingResponse
@@ -148,7 +148,7 @@ async def post_object(file: UploadFile = File(...)):
             status_code=500, detail=f"Failed to upload file to S3: {str(e)}") from e
 
 
-@app.get("/objects", response_model=s3Schemas.ListFilesResponse)
+@app.get("/objects", response_model=storageSchemas.ListFilesResponse)
 def get_objects():
     """
     List all files (names and paths) in the S3 bucket.
@@ -166,7 +166,7 @@ def get_objects():
             status_code=500, detail=f"Error listing files: {str(e)}") from e
 
 
-@app.delete("/objects/{file_name}", response_model=s3Schemas.DeleteResponse)
+@app.delete("/objects/{file_name}", response_model=storageSchemas.DeleteResponse)
 def delet_object(file_name: str):
     """
     Delete a file from the S3 bucket.
@@ -213,3 +213,28 @@ async def get_object(file_name: str):
     except ClientError as e:
         raise HTTPException(
             status_code=500, detail=f"Error downloading file: {str(e)}") from e
+
+
+@app.get("/bucket-type")
+def get_bucket_type_endpoint():
+    """
+    Retrieve the type of the bucket (S3 or GCS).
+
+    This endpoint checks the environment variable "OBJECT_BUCKET_TYPE" and returns the 
+    type of bucket storage being used, either "S3" or "GCS".
+
+    **Returns**:
+    - JSON object containing the bucket type.
+
+    Example:
+        {
+            "bucket_type": "S3"
+        }
+    """
+    try:
+        bucket_type = actions.get_bucket_type()
+        return {"bucket_type": bucket_type}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error retrieving bucket type: {str(e)}"
+        ) from e

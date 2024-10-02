@@ -45,18 +45,18 @@ def override_get_db(db_session_mock):
 
 
 @pytest.fixture
-def override_s3_utils():
+def override_storage_utils():
     """
-    Fixture to override S3 utility functions with mocks for testing.
+    Fixture to override Storage utility functions with mocks for testing.
 
-    This fixture replaces the actual S3 functions with mocks to
-    simulate S3 interactions, ensuring tests do not require real
-    AWS credentials or a live S3 bucket.
+    This fixture replaces the actual Storage functions with mocks to
+    simulate Storage interactions, ensuring tests do not require real
+    AWS credentials or a live Storage bucket.
     """
-    with patch("s3.actions.put_object") as mock_put, \
-            patch("s3.actions.list_objects") as mock_list, \
-            patch("s3.actions.delete_object") as mock_delete, \
-            patch("s3.actions.get_object") as mock_get:
+    with patch("storage.actions.put_object") as mock_put, \
+            patch("storage.actions.list_objects") as mock_list, \
+            patch("storage.actions.delete_object") as mock_delete, \
+            patch("storage.actions.get_object") as mock_get:
         yield mock_put, mock_list, mock_delete, mock_get
 
 
@@ -168,14 +168,14 @@ def test_delete_todo_not_found():
     assert response.json() == {"detail": "Todo not found"}
 
 
-def test_post_object_success(override_s3_utils):
+def test_post_object_success(override_storage_utils):
     """
     Test the POST /objects endpoint for successful file upload.
 
     This test simulates uploading a file to S3 and asserts that
     the response contains the expected success message.
     """
-    mock_put, _, _, _ = override_s3_utils
+    mock_put, _, _, _ = override_storage_utils
     mock_put.return_value = "s3://your-bucket/myfile.txt"
 
     file_data = b"Sample file content"
@@ -189,14 +189,14 @@ def test_post_object_success(override_s3_utils):
     }
 
 
-def test_post_object_failure(override_s3_utils):
+def test_post_object_failure(override_storage_utils):
     """
     Test the POST /objects endpoint for failed file upload.
 
     This test simulates uploading a file to S3 and asserts that
     the response contains the expected error message.
     """
-    mock_put, _, _, _ = override_s3_utils
+    mock_put, _, _, _ = override_storage_utils
     mock_put.side_effect = Exception("S3 upload error")
 
     # Create a dummy file-like object
@@ -209,14 +209,14 @@ def test_post_object_failure(override_s3_utils):
         "detail": "Failed to upload file to S3: S3 upload error"}
 
 
-def test_get_objects_success(override_s3_utils):
+def test_get_objects_success(override_storage_utils):
     """
     Test the GET /objects endpoint for listing files in S3.
 
     This test simulates retrieving the list of files from S3 and
     asserts that the response matches the expected structure.
     """
-    _, mock_list, _, _ = override_s3_utils
+    _, mock_list, _, _ = override_storage_utils
     mock_list.return_value = [
         {"name": "myfile.txt", "path": "s3://your-bucket/myfile.txt"},
         {"name": "anotherfile.txt", "path": "s3://your-bucket/anotherfile.txt"}
@@ -228,14 +228,14 @@ def test_get_objects_success(override_s3_utils):
     assert response.json() == {"files": mock_list.return_value}
 
 
-def test_get_objects_failure(override_s3_utils):
+def test_get_objects_failure(override_storage_utils):
     """
     Test the GET /objects endpoint for failure in listing files from S3.
 
     This test simulates an error when attempting to retrieve the list of files from S3
     and asserts that the response matches the expected error structure.
     """
-    _, mock_list, _, _ = override_s3_utils
+    _, mock_list, _, _ = override_storage_utils
     mock_list.side_effect = ClientError(
         {"Error": {"Code": "404", "Message": "Not Found"}},
         "ListObjects"
@@ -248,14 +248,14 @@ def test_get_objects_failure(override_s3_utils):
         "detail": "Error listing files: An error occurred (404) when calling the ListObjects operation: Not Found"}
 
 
-def test_delete_object_success(override_s3_utils):
+def test_delete_object_success(override_storage_utils):
     """
     Test the DELETE /object/{file_name} endpoint for successful file deletion.
 
     This test simulates deleting a file from S3 and asserts that
     the response contains the expected success message.
     """
-    _, _, mock_delete, _ = override_s3_utils
+    _, _, mock_delete, _ = override_storage_utils
     mock_delete.return_value = "s3://your-bucket/myfile.txt"
 
     response = client.delete("/objects/myfile.txt")
@@ -267,14 +267,14 @@ def test_delete_object_success(override_s3_utils):
     }
 
 
-def test_delete_object_failure(override_s3_utils):
+def test_delete_object_failure(override_storage_utils):
     """
     Test the DELETE /object/{file_name} endpoint for failure in file deletion.
 
     This test simulates an error when attempting to delete a file from S3
     and asserts that the response matches the expected error structure.
     """
-    _, _, mock_delete, _ = override_s3_utils
+    _, _, mock_delete, _ = override_storage_utils
     mock_delete.side_effect = ClientError(
         {"Error": {"Code": "404", "Message": "Not Found"}},
         "DeleteObject"
@@ -289,7 +289,7 @@ def test_delete_object_failure(override_s3_utils):
     }
 
 
-def test_get_object_success(override_s3_utils):
+def test_get_object_success(override_storage_utils):
     """
     Test the GET /objects/{file_name} endpoint for successful file download.
 
@@ -299,7 +299,7 @@ def test_get_object_success(override_s3_utils):
     file_name = "myfile.txt"
     file_content = b"Sample file content"
 
-    _, _, _, mock_get = override_s3_utils
+    _, _, _, mock_get = override_storage_utils
     mock_get.return_value = file_content
 
     response = client.get(f"/objects/{file_name}")
@@ -310,7 +310,7 @@ def test_get_object_success(override_s3_utils):
     assert response.content == file_content
 
 
-def test_get_object_not_found(override_s3_utils):
+def test_get_object_not_found(override_storage_utils):
     """
     Test the GET /objects/{file_name} endpoint when the file is not found.
 
@@ -319,7 +319,7 @@ def test_get_object_not_found(override_s3_utils):
     """
     file_name = "non_existent_file.txt"
 
-    _, _, _, mock_get = override_s3_utils
+    _, _, _, mock_get = override_storage_utils
     mock_get.side_effect = ClientError(
         {"Error": {"Code": "404", "Message": "Not Found"}},
         "GetObject"
@@ -331,4 +331,34 @@ def test_get_object_not_found(override_s3_utils):
     assert response.json() == {
         "detail":
         "Error downloading file: An error occurred (404) when calling the GetObject operation: Not Found"
+    }
+
+
+def test_get_bucket_type_success():
+    """
+    Test the GET /bucket-type endpoint for successfully retrieving the bucket type.
+
+    This test simulates retrieving the bucket type from the actions module and asserts that
+    the response contains the expected bucket type.
+    """
+    with patch("storage.actions.get_bucket_type", return_value="S3"):
+        response = client.get("/bucket-type")
+
+    assert response.status_code == 200
+    assert response.json() == {"bucket_type": "S3"}
+
+
+def test_get_bucket_type_failure():
+    """
+    Test the GET /bucket-type endpoint for failure in retrieving the bucket type.
+
+    This test simulates an error when attempting to retrieve the bucket type from the actions module
+    and asserts that the response matches the expected error structure.
+    """
+    with patch("storage.actions.get_bucket_type", side_effect=Exception("Bucket type error")):
+        response = client.get("/bucket-type")
+
+    assert response.status_code == 500
+    assert response.json() == {
+        "detail": "Error retrieving bucket type: Bucket type error"
     }

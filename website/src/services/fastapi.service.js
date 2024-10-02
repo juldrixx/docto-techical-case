@@ -133,7 +133,6 @@ export function getObjects() {
   });
 }
 
-
 export function getObject(object_name) {
   const getInfo = {
     method: "GET",
@@ -161,6 +160,26 @@ export function deleteObject(object_name) {
 
   return new Promise((resolve, reject) => {
     fetch(`${FASTAPI_URL}/objects/${object_name}`, deleteInfo)
+      .then((result) => {
+        if (!result.ok) throw result;
+        return result.json();
+      })
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+export function getBucketType() {
+  const getInfo = {
+    method: "GET",
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(`${FASTAPI_URL}/bucket-type`, getInfo)
       .then((result) => {
         if (!result.ok) throw result;
         return result.json();

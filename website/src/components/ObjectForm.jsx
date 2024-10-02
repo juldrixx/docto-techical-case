@@ -4,7 +4,7 @@ import { useSnackbar } from "notistack";
 import { uploadObject } from "../services/fastapi.service";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function S3ObjectForm() {
+export default function ObjectForm() {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -25,7 +25,7 @@ export default function S3ObjectForm() {
         variant: "success",
         anchorOrigin: { horizontal: "right", vertical: "bottom" },
       });
-      queryClient.invalidateQueries(["s3Objects"]);
+      queryClient.invalidateQueries(["objects"]);
     } catch (e) {
       enqueueSnackbar(`Error: ${e.statusText}`, {
         variant: "error",

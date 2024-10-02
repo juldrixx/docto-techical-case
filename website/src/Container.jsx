@@ -10,11 +10,11 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import GitHubButton from "./components/GitHubButton";
 import ThemePicker from "./components/ThemePicker";
-import { getRoot } from "./services/fastapi.service";
+import { getBucketType, getRoot } from "./services/fastapi.service";
 import TodoList from "./components/TodoList";
 import TodoForm from "./components/TodoForm";
-import S3ObjectForm from "./components/S3ObjectForm";
-import S3ObjectList from "./components/S3ObjectList";
+import ObjectForm from "./components/ObjectForm";
+import ObjectList from "./components/ObjectList";
 
 function Container() {
   const [tab, setTab] = useState(0);
@@ -22,6 +22,11 @@ function Container() {
   const apiMessage = useQuery({
     queryKey: ["apiMessage"],
     queryFn: () => getRoot(),
+  });
+
+  const bucketType = useQuery({
+    queryKey: ["bucketType"],
+    queryFn: () => getBucketType(),
   });
 
   const handleChangeTab = (_, newTab) => {
@@ -50,7 +55,10 @@ function Container() {
         )}
         <Tabs value={tab} onChange={handleChangeTab}>
           <Tab label="Todo" />
-          <Tab label="S3" />
+          <Tab
+            label={bucketType.data?.bucket_type ?? "Object"}
+            disabled={!bucketType.data?.bucket_type}
+          />
         </Tabs>
         <Stack width="80%" padding={2} gap={2}>
           {tab === 0 ? (
@@ -60,8 +68,8 @@ function Container() {
             </>
           ) : (
             <>
-              <S3ObjectForm />
-              <S3ObjectList />
+              <ObjectForm />
+              <ObjectList />
             </>
           )}
         </Stack>

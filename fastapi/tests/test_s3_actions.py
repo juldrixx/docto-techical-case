@@ -5,7 +5,7 @@ Unit tests for the S3 actions.
 import pytest
 import boto3
 from moto import mock_aws
-from s3.actions import list_objects, put_object, delete_object, get_object
+from storage.actions import list_objects, put_object, delete_object, get_object
 
 BUCKET_NAME = 'test-bucket'
 
@@ -25,7 +25,7 @@ def s3_client(monkeypatch):
         - AWS_ACCESS_KEY_ID: Mock access key for AWS (set to 'test').
         - AWS_SECRET_ACCESS_KEY: Mock secret key for AWS (set to 'test').
         - AWS_DEFAULT_REGION: Mock region for AWS (set to 'us-east-1').
-        - S3_BUCKET: The name of the S3 bucket to be used (set to 
+        - OBJECT_BUCKET: The name of the S3 bucket to be used (set to 
           'test-bucket').
 
     Yields:
@@ -36,7 +36,8 @@ def s3_client(monkeypatch):
         monkeypatch.setenv('AWS_ACCESS_KEY_ID', 'test')
         monkeypatch.setenv('AWS_SECRET_ACCESS_KEY', 'test')
         monkeypatch.setenv('AWS_DEFAULT_REGION', 'us-east-1')
-        monkeypatch.setenv('S3_BUCKET', BUCKET_NAME)
+        monkeypatch.setenv('OBJECT_BUCKET', BUCKET_NAME)
+        monkeypatch.setenv('OBJECT_BUCKET_TYPE', "S3")
         s3 = boto3.resource('s3')
         s3.create_bucket(Bucket=BUCKET_NAME)
         yield s3
