@@ -116,11 +116,11 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Configure gcp credentials
+        uses: google-github-actions/auth@v2
         with:
-          role-to-assume: arn:aws:iam::920373018420:role/github-action
-          aws-region: eu-west-3
+          project_id: 'pristine-clone-437317-u3'
+          workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -212,11 +212,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_destroy == 'true'
     steps:
-      - name: Configure gcp credentials
+      - name: Configure aws credentials
         uses: google-github-actions/auth@v2
         with:
-          project_id: 'pristine-clone-437317-u3'
-          workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+          role-to-assume: arn:aws:iam::920373018420:role/github-action
+          aws-region: eu-west-3
 
       - name: Checkout repository
         uses: actions/checkout@v4
