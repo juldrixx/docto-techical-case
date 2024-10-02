@@ -269,7 +269,7 @@ jobs:
       - name: Plan Terraform Configuration
         run: |
           ./terraform.sh \
-            --platform aws \
+            --platform gcp \
             --env prd \
             --cmd plan
     permissions:
