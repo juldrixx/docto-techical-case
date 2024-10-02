@@ -8,15 +8,15 @@ You can find here a basic documentation on the Terraform. If you want a more det
 
 I replicated the case in GCP but with another approach. You can find the docutementation [here](gcp/README.md).
 
-### Scenario
+## Scenario
 
 Your company is migrating its on-premises data infrastructure to AWS. As a DataOps Engineer Level 1, you have been tasked with automating the provisioning and management of AWS resources using Terraform.
 
-### Architecture
+## Architecture
 
 ![architecture_aws](img/docto_technical_case.aws.png)
 
-### How to run - Terraform
+## How to run - Terraform
 
 ```sh
 ./terraform.sh \
