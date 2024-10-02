@@ -93,15 +93,3 @@ To run tests, ensure that the `TESTING` environment variable is set to `true`, a
 ```bash
 TESTING=true pytest
 ```
-
-## CORS Configuration
-
-This project includes CORS middleware to allow frontend applications like React to interact with the API. You can configure the allowed origins in the code:
-
-```python
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-]
-```
-
