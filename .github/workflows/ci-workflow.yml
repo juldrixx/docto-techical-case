@@ -9,9 +9,10 @@ on:
       plateform:
         description: "Plateform"
         required: true
-        default: "aws"
+        default: "all"
         type: choice
         options:
+          - all
           - aws
           - gpc
       run_destroy:
@@ -160,7 +161,7 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
 
   terraform_plan_aws:
-    if: github.event.inputs.run_destroy != 'true' && github.event.inputs.plateform == 'aws'
+    if: github.event.inputs.run_destroy != 'true' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'aws')
     runs-on: ubuntu-latest
     steps:
       - name: Configure aws credentials
@@ -190,7 +191,7 @@ jobs:
   terraform_apply_aws:
     runs-on: ubuntu-latest
     needs: [terraform_plan_aws]
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.plateform == 'aws' && github.event.inputs.run_destroy != 'true'
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'aws') && github.event.inputs.run_destroy != 'true'
     steps:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -219,7 +220,7 @@ jobs:
 
   terraform_delete_aws:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.plateform == 'aws' && github.event.inputs.run_destroy == 'true'
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'aws') && github.event.inputs.run_destroy == 'true'
     steps:
       - name: Configure aws credentials
         uses: google-github-actions/auth@v2
@@ -247,7 +248,7 @@ jobs:
       contents: read
 
   terraform_plan_gcp:
-    if: github.event.inputs.run_destroy != 'true' && github.event.inputs.plateform == 'gcp'
+    if: github.event.inputs.run_destroy != 'true' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'gcp')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -278,7 +279,7 @@ jobs:
   terraform_apply_gcp:
     runs-on: ubuntu-latest
     needs: [terraform_plan_gcp]
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.plateform == 'gcp' && github.event.inputs.run_destroy != 'true'
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'gcp') && github.event.inputs.run_destroy != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -308,7 +309,7 @@ jobs:
 
   terraform_delete_gcp:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.plateform == 'gcp' && github.event.inputs.run_destroy == 'true'
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.plateform == 'all' || github.event.inputs.plateform == 'gcp') && github.event.inputs.run_destroy == 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
