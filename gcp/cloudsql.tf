@@ -10,6 +10,7 @@ resource "google_service_networking_connection" "vpc_peering" {
   network                 = google_compute_network.vpc.id
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.sql.name]
+  deletion_policy         = "ABANDON"
 }
 
 #tfsec:ignore:google-sql-encrypt-in-transit-data
@@ -19,12 +20,12 @@ resource "google_sql_database_instance" "sql" {
   database_version = "MYSQL_8_0"
 
   deletion_protection = false
-  
+
   settings {
     tier              = "db-f1-micro"
     availability_type = "ZONAL"
     activation_policy = "ALWAYS"
-    
+
     backup_configuration {
       enabled = true
     }
