@@ -2,7 +2,11 @@
 
 ## AWS
 
-You find here a basic documentation on the Terraform. If you want a more detailed documentation/explanation of the requirements and choices go [here](aws/README.md).
+You can find here a basic documentation on the Terraform. If you want a more detailed documentation/explanation of the requirements and choices go [here](aws/README.md).
+
+## GCP
+
+I replicated the case in GCP but with another approach. You can find the docutementation [here](gcp/README.md).
 
 ### Scenario
 
